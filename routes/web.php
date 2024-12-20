@@ -5,9 +5,7 @@ use App\Http\Controllers\StockController;
 use App\Http\Controllers\PageController;  // Import PageController
 
 // Root route
-Route::get('/', function () {
-    return view('layouts.sidebar'); // Ensure this file exists at resources/views/layouts/sidebar.blade.php
-});
+Route::get('/', [PageController::class, 'dashboard'])->name('dashboard'); // Dashboard page
 
 
 // View routes handled by PageController
