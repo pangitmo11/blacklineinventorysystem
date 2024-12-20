@@ -10,13 +10,12 @@
 
 <style>
     .select2-container--open {
-    z-index: 1050 !important;  /* Make sure it's above the modal */
-}
+        z-index: 1050 !important;  /* Make sure it's above the modal */
+    }
 
-.modal-body {
-    overflow: auto; /* Allow scrolling if content overflows */
-}
-
+    .modal-body {
+        overflow: auto; /* Allow scrolling if content overflows */
+    }
 </style>
 
 @section('content')
@@ -28,7 +27,7 @@
     <!-- Cards Section -->
     <div class="row justify-content-center">
         <!-- Total Active Materials Card -->
-        <div class="col-md-3 mb-3">
+        <div class="col-lg-3 col-md-6 mb-3">
             <div class="card bg-success text-center text-white shadow">
                 <div class="card-body">
                     <h5 class="card-title" style="font-size: 1rem;">Total Active Materials</h5>
@@ -38,7 +37,7 @@
         </div>
 
         <!-- Total Released Materials Card -->
-        <div class="col-md-3 mb-3">
+        <div class="col-lg-3 col-md-6 mb-3">
             <div class="card bg-primary text-center text-white shadow">
                 <div class="card-body">
                     <h5 class="card-title" style="font-size: 1rem;">Total Released Materials</h5>
@@ -48,7 +47,7 @@
         </div>
 
         <!-- Total Activated Materials Card -->
-        <div class="col-md-3 mb-3">
+        <div class="col-lg-3 col-md-6 mb-3">
             <div class="card bg-info text-center text-white shadow">
                 <div class="card-body">
                     <h5 class="card-title" style="font-size: 1rem;">Total Activated Materials</h5>
@@ -58,7 +57,7 @@
         </div>
 
         <!-- Total Repair Materials Card -->
-        <div class="col-md-3 mb-3">
+        <div class="col-lg-3 col-md-6 mb-3">
             <div class="card bg-danger text-center text-white shadow">
                 <div class="card-body">
                     <h5 class="card-title" style="font-size: 1rem;">Total Repair Materials</h5>
@@ -66,7 +65,6 @@
                 </div>
             </div>
         </div>
-
     </div>
 
     <!-- Filter Card -->
@@ -129,17 +127,17 @@
     <!-- buttons -->
     <div class="row">
         <!-- Left-aligned buttons -->
-        <div class="col-md-8 d-flex justify-content-start">
-            <button class="btn btn-sm btn-primary mb-2" style="margin-right: 5px;" data-toggle="modal" data-target="#createstocks">
+        <div class="col-md-8 d-flex justify-content-start flex-wrap">
+            <button class="btn btn-sm btn-primary mb-2 mr-2" data-toggle="modal" data-target="#createstocks">
                 <i class="fas fa-plus"></i> Add
             </button>
-            <button class="btn btn-sm btn-success mb-2" style="margin-right: 5px;" id="activestocksbtn">
+            <button class="btn btn-sm btn-success mb-2 mr-2" id="activestocksbtn">
                 <i class="fas fa-list"></i> Active
             </button>
-            <button class="btn btn-sm btn-primary mb-2" style="margin-right: 5px;" data-toggle="modal" data-target="#releasedstocks">
+            <button class="btn btn-sm btn-primary mb-2 mr-2" data-toggle="modal" data-target="#releasedstocks">
                 <i class="fas fa-list"></i> Released
             </button>
-            <button class="btn btn-sm btn-info mb-2" style="margin-right: 5px;" data-toggle="modal" data-target="#installationstocks">
+            <button class="btn btn-sm btn-info mb-2 mr-2" data-toggle="modal" data-target="#installationstocks">
                 <i class="fas fa-list"></i> Installation
             </button>
             <button class="btn btn-sm btn-danger mb-2" data-toggle="modal" data-target="#repairstocks">
@@ -148,8 +146,8 @@
         </div>
 
         <!-- Right-aligned buttons -->
-        <div class="col d-flex justify-content-end">
-            <button class="btn btn-sm btn-warning mb-2" id="stocksprintPDF" style="margin-right: 5px;">
+        <div class="col-md-4 d-flex justify-content-end flex-wrap">
+            <button class="btn btn-sm btn-warning mb-2 mr-2" id="stocksprintPDF">
                 <i class="fas fa-file-pdf"></i> Print PDF
             </button>
             <button class="btn btn-sm btn-info mb-2" id="stocksprintExcel">
@@ -489,23 +487,25 @@
         </div>
         <div class="card-body">
             <!-- DataTable -->
-            <table id="stockstable"
-                class="table table-sm display table-bordered table-responsive-md table-vcenter js-dataTable-buttons text-center dataTable no-footer">
-                <thead class="table-dark">
-                    <tr>
-                        <th>Product Name</th>
-                        <th>Description</th>
-                        <th>Account No.</th>
-                        <th>Serial No.</th>
-                        <th>Date Active</th>
-                        <th style="width: 9%;">Status</th>
-                        <th></th>
-                    </tr>
-                </thead>
-                <tbody id="table-body">
-                    <!-- The table rows will be dynamically populated by DataTable -->
-                </tbody>
-            </table>
+            <div class="table-responsive">
+                <table id="stockstable"
+                    class="table table-sm display table-bordered table-vcenter js-dataTable-buttons text-center dataTable no-footer w-100">
+                    <thead class="table-dark">
+                        <tr>
+                            <th>Product Name</th>
+                            <th>Description</th>
+                            <th>Account No.</th>
+                            <th>Serial No.</th>
+                            <th>Date Active</th>
+                            <th>Status</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody id="table-body">
+                        <!-- The table rows will be dynamically populated by DataTable -->
+                    </tbody>
+                </table>
+            </div>
         </div>
     </div>
 
