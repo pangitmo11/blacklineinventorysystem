@@ -1686,7 +1686,7 @@
                     {
                         data: 'product_name',
                         render: data => data ? data : 'N/A',
-                        orderable: true // Allow sorting
+                        orderable: true, // Allow sorting
                     },
                     {
                         data: 'description',
@@ -1746,7 +1746,8 @@
                                 '<button class="delete btn btn-danger btn-sm" data-id="' + row.id +
                                 '"><i class="fas fa-trash-alt"></i></button>';
                         },
-                        orderable: false // Disable sorting for action buttons
+                        orderable: false, // Disable sorting for action buttons
+                        width: '11%' // Set a fixed width for the action buttons
                     }
                 ]
             });
