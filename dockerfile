@@ -1,30 +1,22 @@
-# Use official PHP image from the Docker Hub
-FROM php:8.1-fpm
+FROM php:8.2-fpm
 
-# Install dependencies
-RUN apt-get update && apt-get install -y \
-    libpng-dev \
-    libjpeg62-turbo-dev \
-    libfreetype6-dev \
-    zip \
-    git \
-    curl \
-    libxml2-dev \
-    && docker-php-ext-configure gd --with-freetype --with-jpeg \
-    && docker-php-ext-install gd pdo pdo_mysql
+# Install system dependencies and PHP extensions
+RUN apt-get update && apt-get install -y libpng-dev libjpeg-dev libfreetype6-dev libzip-dev && \
+    docker-php-ext-configure gd --with-freetype --with-jpeg && \
+    docker-php-ext-install gd zip
 
-# Install Composer (PHP dependency manager)
-RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
+# Install Composer
+COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
-# Set the working directory inside the container
+# Set working directory
 WORKDIR /var/www/html
 
-# Copy the application files into the container
+# Copy application files
 COPY . .
 
 # Install PHP dependencies
 RUN composer install --no-dev --optimize-autoloader
 
-# Expose port 9000 and start PHP-FPM server
+# Expose port and start PHP-FPM server
 EXPOSE 9000
 CMD ["php-fpm"]
