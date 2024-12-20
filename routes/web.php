@@ -5,8 +5,9 @@ use App\Http\Controllers\StockController;
 use App\Http\Controllers\PageController;  // Import PageController
 
 // Root route
-Route::get('/', [PageController::class, 'dashboard'])->name('dashboard'); // Dashboard page
-
+Route::get('/', function () {
+    return redirect()->route('dashboard');
+});
 
 // View routes handled by PageController
 Route::get('/dashboard', [PageController::class, 'dashboard'])->name('dashboard'); // Dashboard page
