@@ -16,10 +16,12 @@ class CreateStocksTbl extends Migration
         Schema::create('stocks_tbl', function (Blueprint $table) {
             $table->id();
             $table->string('product_name')->nullable();
-            $table->string('description')->nullable();
+            $table->unsignedBigInteger('description_id')->nullable();
             $table->string('team_tech')->nullable();
+            $table->integer('quantity')->default(0)->nullable();
             $table->string('account_no')->nullable();
             $table->string('j_o_no')->nullable();
+            $table->string('sar_no')->nullable();
             $table->string('serial_no')->nullable();
             $table->string('serial_new_no')->nullable();
             $table->string('ticket_no')->nullable();
@@ -27,9 +29,13 @@ class CreateStocksTbl extends Migration
             $table->date('date_released')->nullable();
             $table->date('date_used')->nullable();
             $table->date('date_repaired')->nullable();
-            $table->tinyInteger('status')->nullable()->default(null); // To store 0, 1, 2, 3, 4
+            $table->tinyInteger('status')->nullable()->default(null);
             $table->timestamps();
+
+            // Foreign Key Constraints
+            $table->foreign('description_id')->references('id')->on('stocks_level')->onDelete('cascade');
         });
+
     }
 
     /**

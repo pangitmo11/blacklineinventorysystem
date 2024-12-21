@@ -26,15 +26,6 @@
 
     <!-- Cards Section -->
     <div class="row justify-content-center">
-        <!-- Total Active Materials Card -->
-        <div class="col-lg-3 col-md-6 mb-3">
-            <div class="card bg-success text-center text-white shadow">
-                <div class="card-body">
-                    <h5 class="card-title" style="font-size: 1rem;">Total Active Materials</h5>
-                    <p class="card-text" id="active-count" style="font-size: 1.5rem;">0</p>
-                </div>
-            </div>
-        </div>
 
         <!-- Total Released Materials Card -->
         <div class="col-lg-3 col-md-6 mb-3">
@@ -42,6 +33,16 @@
                 <div class="card-body">
                     <h5 class="card-title" style="font-size: 1rem;">Total Released Materials</h5>
                     <p class="card-text" id="released-count" style="font-size: 1.5rem;">0</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Total Activision Materials Card -->
+        <div class="col-lg-3 col-md-6 mb-3">
+            <div class="card bg-warning text-center text-white shadow">
+                <div class="card-body">
+                    <h5 class="card-title" style="font-size: 1rem;">Total For Activision</h5>
+                    <p class="card-text" id="active-count" style="font-size: 1.5rem;">0</p>
                 </div>
             </div>
         </div>
@@ -102,9 +103,6 @@
                         <label for="year_select">Year</label>
                         <select id="year_select" class="form-control select2">
                             <option value="All">All</option>
-                            <option>2023</option>
-                            <option>2024</option>
-                            <option>2025</option>
                         </select>
                     </div>
 
@@ -113,8 +111,8 @@
                         <label for="status_select">Status</label>
                         <select id="status_select" class="form-control select2">
                             <option value="All">All</option>
-                            <option value="0">Active</option>
                             <option value="1">Released</option>
+                            <option value="2">Activision</option>
                             <option value="2">Activated</option>
                             <option value="3">Repair</option>
                         </select>
@@ -131,8 +129,8 @@
             <button class="btn btn-sm btn-primary mb-2 mr-2" data-toggle="modal" data-target="#createstocks">
                 <i class="fas fa-plus"></i> Add
             </button>
-            <button class="btn btn-sm btn-success mb-2 mr-2" id="activestocksbtn">
-                <i class="fas fa-list"></i> Active
+            <button class="btn btn-sm btn-success mb-2 mr-2" id="stockslevelbtn">
+                <i class="fas fa-list"></i> Stocks
             </button>
             <button class="btn btn-sm btn-primary mb-2 mr-2" data-toggle="modal" data-target="#releasedstocks">
                 <i class="fas fa-list"></i> Released
@@ -159,7 +157,7 @@
     <!-- Add stocks Modal -->
     <div class="modal fade" id="createstocks" tabindex="-1" role="dialog" aria-labelledby="createstocksLabel"
         aria-hidden="true" data-backdrop="static" data-keyboard="false">
-        <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-dialog modal-lg modal-dialog-centered">
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title">Create New Stock</h5>
@@ -170,12 +168,12 @@
                         <div class="col-md-12">
                             <div class="form-group">
                                 <div class="form-check">
-                                    <input class="form-check-input" type="radio" name="status" value="0" id="stocks_active" checked>
-                                    <label class="form-check-label" for="stocks_active"><span class='badge bg-success'>Status as ACTIVE</span></label>
-                                </div>
-                                <div class="form-check">
                                     <input class="form-check-input" type="radio" name="status" value="1" id="stocks_released">
                                     <label class="form-check-label" for="stocks_released"><span class='badge bg-primary'>Status as RELEASED</span></label>
+                                </div>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="radio" name="status" value="0" id="stocks_activation">
+                                    <label class="form-check-label" for="stocks_activation"><span class='badge bg-success'>Status as ACTIVATION</span></label>
                                 </div>
                                 <div class="form-check">
                                     <input class="form-check-input" type="radio" name="status" value="2" id="stocks_activated">
@@ -189,6 +187,23 @@
                         </div>
 
                         <!-- Default form fields -->
+                        <div class="col-md-12 mb-3">
+                            <div class="form-group" id="quantity_field">
+                                    <label for="create_stocks"><strong>Description</strong></label>
+                                    <select class="form-control icon-input" name="description_name[]" id="stocks_description" style="width: 100%;" multiple="multiple">
+                                    </select>
+                            </div>
+                        </div>
+
+                        <div class="col-md-12 mb-3">
+                            <div class="form-group">
+                                <label for="create_stocks"><strong>Product Name</strong></label>
+                                <input type="text" onkeyup="this.value = this.value.split(' ').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ');"
+                                    class="form-control" id="stocks_product_name" placeholder="Enter Product Name"
+                                    data-name="stocks_product_name" name="product_name">
+                            </div>
+                        </div>
+
                         <div class="col-md-12 mb-3">
                             <div class="form-group">
                                 <label for="create_stocks"><strong>Serial No.</strong></label>
@@ -207,23 +222,6 @@
                             </div>
                         </div>
 
-                        <div class="col-md-12 mb-3">
-                            <div class="form-group">
-                                <label for="create_stocks"><strong>Description</strong></label>
-                                <input type="text" onkeyup="this.value = this.value.split(' ').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ');"
-                                    class="form-control" id="stocks_description" placeholder="Enter Description"
-                                    data-name="stocks_description" name="description">
-                            </div>
-                        </div>
-
-                        <div class="col-md-12 mb-3">
-                            <div class="form-group">
-                                <label for="create_stocks"><strong>Product Name</strong></label>
-                                <input type="text" onkeyup="this.value = this.value.split(' ').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ');"
-                                    class="form-control" id="stocks_product_name" placeholder="Enter Product Name"
-                                    data-name="stocks_product_name" name="product_name">
-                            </div>
-                        </div>
 
                         <div class="col-md-12 mb-3">
                             <div class="form-group">
@@ -267,6 +265,16 @@
                                         data-name="jo_account_no" name="jo_no">
                                 </div>
                             </div>
+
+                            <div class="col-md-12 mb-3">
+                                <div class="form-group">
+                                    <label for="create_stocks"><strong>SAR No.</strong></label>
+                                    <input type="text" onkeyup="this.value = this.value.toUpperCase();"
+                                        class="form-control" id="stocks_jo_no" placeholder="Enter J.O No."
+                                        data-name="jo_account_no" name="jo_no">
+                                </div>
+                            </div>
+
                             <div class="col-md-12 mb-3">
                                 <div class="form-group">
                                     <label for="create_stocks"><strong>Date Used</strong></label>
@@ -357,10 +365,19 @@
                         <!-- Default form fields -->
                         <div class="col-md-12 mb-3">
                             <div class="form-group">
+                                <label for="create_stocks"><strong>Description</strong></label>
+                                <input type="text" onkeyup="this.value = this.value.split(' ').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ');"
+                                    class="form-control" id="editstocks_description" placeholder="Enter Description"
+                                    data-name="stocks_description" name="description">
+                            </div>
+                        </div>
+
+                        <div class="col-md-12 mb-3">
+                            <div class="form-group">
                                 <label for="editcreate_stocks"><strong>Serial No.</strong></label>
                                 <input type="text" onkeyup="this.value = this.value.toUpperCase();"
                                     class="form-control" id="editstocks_serial_no" placeholder="Enter Serial No."
-                                    data-name="stocks_serial_no" name="serial_no">
+                                    data-name="stocks_serial_no" name="serial_no" readonly>
                             </div>
                         </div>
 
@@ -373,14 +390,6 @@
                             </div>
                         </div>
 
-                        <div class="col-md-12 mb-3">
-                            <div class="form-group">
-                                <label for="create_stocks"><strong>Description</strong></label>
-                                <input type="text" onkeyup="this.value = this.value.split(' ').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ');"
-                                    class="form-control" id="editstocks_description" placeholder="Enter Description"
-                                    data-name="stocks_description" name="description">
-                            </div>
-                        </div>
 
                         <div class="col-md-12 mb-3">
                             <div class="form-group">
@@ -496,7 +505,6 @@
                             <th>Description</th>
                             <th>Account No.</th>
                             <th>Serial No.</th>
-                            <th>Date Active</th>
                             <th>Status</th>
                             <th></th>
                         </tr>
@@ -509,83 +517,165 @@
         </div>
     </div>
 
-    <!-- Active Stocks Modal -->
-    <div class="modal fade" id="activestocks" tabindex="-1" role="dialog" aria-labelledby="activestocksLabel" aria-hidden="true" data-backdrop="static" data-keyboard="false">
+    <!-- Stocks level Modal -->
+    <div class="modal fade" id="stockslevel" tabindex="-1" role="dialog" aria-labelledby="stockslevelLabel" aria-hidden="true" data-backdrop="static" data-keyboard="false">
         <div class="modal-dialog modal-dialog-centered modal-xl">
             <div class="modal-content">
                 <!-- Modal Header -->
                 <div class="modal-header bg-success text-white">
-                    <h5 class="modal-title" id="activestocksLabel">Active Stocks</h5>
+                    <h5 class="modal-title" id="stockslevelLabel">Stocks Level</h5>
                     <button type="button" class="btn-close" data-dismiss="modal" aria-label="Close"></button>
                 </div>
 
+
                 <!-- Modal Body -->
                 <div class="modal-body">
-                    <!-- Filter Card -->
-                    <div class="card mb-4 shadow">
-                        <div class="card-header">
-                            <i class="fas fa-filter"></i> Filter
-                        </div>
-                        <div class="card-body">
-                            <div class="row">
-                                <!-- Month Filter -->
-                                <div class="col-md-6 mb-3">
-                                    <label for="filterMonth" class="form-label">Month</label>
-                                    <select id="activefilterMonth" class="form-select activefilterMonth">
-                                        <option value="All" selected>All</option>
-                                        <option value="1">January</option>
-                                        <option value="2">February</option>
-                                        <option value="3">March</option>
-                                        <option value="4">April</option>
-                                        <option value="5">May</option>
-                                        <option value="6">June</option>
-                                        <option value="7">July</option>
-                                        <option value="8">August</option>
-                                        <option value="9">September</option>
-                                        <option value="10">October</option>
-                                        <option value="11">November</option>
-                                        <option value="12">December</option>
-                                    </select>
-                                </div>
+                    <!-- Cards Section -->
+                    <div class="row justify-content-center">
 
-                                <!-- Year Filter -->
-                                <div class="col-md-6 mb-3">
-                                    <label for="filterYear" class="form-label">Year</label>
-                                    <select id="activefilterYear" class="form-select activefilterYear">
-                                        <option value="All" selected>All</option>
-                                        <option value="2023">2023</option>
-                                        <option value="2024">2024</option>
-                                        <option value="2025">2025</option>
-                                    </select>
+                        <!-- Total Materials Card -->
+                        <div class="col-lg-3 col-md-6 mb-3">
+                            <div class="card bg-success text-center text-white shadow">
+                                <div class="card-body">
+                                    <h5 class="card-title" style="font-size: 1rem;">Total Materials</h5>
+                                    <p class="card-text" id="totalstockslevel" style="font-size: 1.5rem;">0</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Total Released Materials Card -->
+                        <div class="col-lg-3 col-md-6 mb-3">
+                            <div class="card bg-primary text-center text-white shadow">
+                                <div class="card-body">
+                                    <h5 class="card-title" style="font-size: 1rem;">Total Used Materials</h5>
+                                    <p class="card-text" id="usedcountmaterials" style="font-size: 1.5rem;">0</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Total Available Materials Card -->
+                        <div class="col-lg-3 col-md-6 mb-3">
+                            <div class="card bg-success text-center text-white shadow">
+                                <div class="card-body">
+                                    <h5 class="card-title" style="font-size: 1rem;">Total Available Materials</h5>
+                                    <p class="card-text" id="availablestockslevel" style="font-size: 1.5rem;">0</p>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <!-- buttons -->
+                    <div class="row">
+                        <!-- Left-aligned buttons -->
+                        <div class="col-md-8 d-flex justify-content-start flex-wrap">
+                            <button class="btn btn-sm btn-primary mb-2 mr-2" data-toggle="modal" data-target="#createstockslevel">
+                                <i class="fas fa-plus"></i> Add
+                            </button>
+                        </div>
+
+                        <!-- Right-aligned buttons -->
+                        <div class="col-md-4 d-flex justify-content-end flex-wrap">
+                            <button class="btn btn-sm btn-warning mb-2 mr-2" id="stocklevelsprintPDF">
+                                <i class="fas fa-file-pdf"></i> Print PDF
+                            </button>
+                            <button class="btn btn-sm btn-info mb-2" id="stockslevelprintExcel">
+                                <i class="fas fa-file-excel"></i> Print Excel
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Add stocks level Modal -->
+                    <div class="modal fade" id="createstockslevel" tabindex="-1" role="dialog" aria-labelledby="createstockslevelLabel"
+                        aria-hidden="true">
+                        <div class="modal-dialog modal-dialog-centered shadow">
+                            <div class="modal-content">
+                                <div class="modal-header bg-primary text-white">
+                                    <h5 class="modal-title">Create New Stocks level</h5>
+                                </div>
+                                <div class="modal-body">
+                                    <form id="stockslevelform" class="row p-3">
+                                        <div class="col-md-12">
+                                            <div class="form-group">
+                                                <div class="mb-3">
+                                                    <label class="form-label">Materials & Quantities</label>
+                                                    <table class="table table-bordered" id="DescriptionTable">
+                                                        <thead>
+                                                            <tr>
+                                                                <th>Materials</th>
+                                                                <th>Quantity</th>
+                                                                <th>Actions</th>
+                                                            </tr>
+                                                        </thead>
+                                                        <tbody>
+                                                            <!-- Dynamic rows will be added here -->
+                                                        </tbody>
+                                                    </table>
+                                                    <button type="button" class="btn btn-sm btn-success" id="addRowBtn">Add Row</button>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="col-12 d-flex justify-content-end">
+                                            <button type="submit" class="btn btn-sm btn-primary btn-block" id="savestockslevelbtn">Save</button>
+                                        </div>
+                                    </form>
+
                                 </div>
                             </div>
                         </div>
                     </div>
 
-                    <!-- Buttons -->
-                    <button class="btn btn-warning mb-3" style="margin-right: 5px;" id="activestocksprintpdf">
-                        <i class="fas fa-file-pdf"></i> Print PDF
-                    </button>
-                    <button class="btn btn-info mb-3" id="activestocksprintexcel">
-                        <i class="fas fa-file-excel"></i> Print Excel
-                    </button>
+                    <!-- edit stocks level Modal -->
+                    <div class="modal fade" id="editcreatestockslevel" tabindex="-1" role="dialog" aria-labelledby="createstockslevelLabel"
+                        aria-hidden="true">
+                        <div class="modal-dialog modal-dialog-centered shadow">
+                            <div class="modal-content">
+                                <div class="modal-header bg-primary text-white">
+                                    <h5 class="modal-title">Update Stocks Material</h5>
+                                </div>
+                                <div class="modal-body">
+                                    <form id="editstockslevelform" class="row p-3">
+                                        <div class="col-md-12">
+                                            <div class="form-group">
+                                                <div class="form-group">
+                                                    <label for="editDescription">Material Description</label>
+                                                    <input type="text" id="editDescription" class="form-control" placeholder="Enter material description" onkeyup="this.value = this.value.toUpperCase();">
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="col-12 d-flex justify-content-end">
+                                            <button type="submit" class="btn btn-sm btn-primary btn-block" id="updatestockslevelbtn">Save</button>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
 
                     <!-- Table -->
-                    <table id="activestockstable" class="table table-sm display table-bordered table-responsive-md table-vcenter js-dataTable-buttons text-center dataTable no-footer w-100">
-                        <thead class="table-dark">
-                            <tr>
-                                <th>Product Name</th>
-                                <th>Description</th>
-                                <th>Serial No.</th>
-                                <th>Account No.</th>
-                                <th>Date Active</th>
-                                <th>Status</th>
-                            </tr>
-                        </thead>
-                        <tbody id="activestockstableBody">
-                            <!-- Table rows will be dynamically populated -->
-                        </tbody>
-                    </table>
+                    <div class="card shadow">
+                            <div class="card-header text-black">
+                                <strong>Stocks Level</strong>
+                            </div>
+                        <div class="card-body">
+
+                            <!-- Table -->
+                            <table id="stocksleveltable" class="table table-sm display table-bordered table-responsive-md table-vcenter js-dataTable-buttons text-center dataTable no-footer w-100">
+                                <thead class="table-dark">
+                                    <tr>
+                                        <th>Materials</th>
+                                        <th>Status</th>
+                                        <th></th>
+                                    </tr>
+                                </thead>
+                                <tbody id="stocksleveltableBody">
+                                    <!-- Table rows will be dynamically populated -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -884,8 +974,8 @@
         //triggers to fetch stocks data
         fetchstockdata();
 
-        //triggers to fetch active stocks data
-        fetchactivestocks();
+        //triggers to fetch stocks level data
+        fetchstocksleveldata();
 
         //triggers to fetch released stocks data
         fetchreleasedstocks();
@@ -899,11 +989,14 @@
         // Trigger the function to fetch material counts on page load
         fetchMaterialCounts();
 
-        // Initial fetch to populate the table on page load
-        fetchAndRenderStocks();
+        // Call the function to fetch and update the total quantity
+        fetchTotalMaterials();
 
-        // Trigger fetchFilteredStocks when the month or year filter changes
-        fetchFilteredactiveStocks();
+        // Call the function to fetch and update the total quantity
+        fetchTotalDescriptionsExcludingActive()
+
+        // Call the function to fetch and update the total quantity
+        fetchTotalActiveDescriptions();
 
         // Trigger fetchFilteredStocks when the month or year filter changes
         fetchFilteredreleasedStocks();
@@ -917,9 +1010,17 @@
         // Trigger fetchFilteredStocks when the month or year filter changes
         fetchFilteredrepairedStocks();
 
+        // Trigger fetchFilteredStocks when the month or year filter changes
+        selectstocksleveldescription();
+
         //triggers to save or store stocks data
         $('#savebtn').click(function() {
             save_stocks(event)
+        });
+
+        // Trigger save function
+        $('#savestockslevelbtn').click(function () {
+            save_stocks_level(event);
         });
 
         //triggers to fetch stocks data to modal
@@ -929,20 +1030,28 @@
             fetchstoredstocks(id);
         })
 
+        //triggers to fetch stocks level data to modal
+        $('#stocksleveltable').on('click', '.editstockslevel', function(event) {
+            event.preventDefault();
+            var id = $(this).data('id');
+            fetchstoredstockslevel(id);
+        })
+
         // Trigger button for updating stocks
         $('#updatebtn').click(function(event) {
             event.preventDefault(); // Prevent default button behavior
             update_stocks(event); // Pass the event object
         });
 
+        // Trigger button for updating stocks level
+        $('#updatestockslevelbtn').click(function(event) {
+            event.preventDefault(); // Prevent default button behavior
+            update_stocks_level(event); // Pass the event object
+        });
+
         // Trigger fetch and update on filter changes
         $('#month_select, #year_select, #status_select').change(function () {
             fetchAndRenderStocks();
-        });
-
-        // Trigger fetchFilteredStocks when the month or year filter changes
-        $('#activefilterMonth, #activefilterYear').change(function() {
-            fetchFilteredactiveStocks();
         });
 
         // Trigger fetchFilteredStocks when the team tech month, year filter changes
@@ -1016,55 +1125,30 @@
         });
 
         // Trigger when the modal is opened to fetch active stocks
-        $(document).on('click', '#activestocksbtn', function(e) {
-            $('#activestocks').modal('show');
-            fetchFilteredactiveStocks(); // Fetch the filtered data on modal open
+        $(document).on('click', '#stockslevelbtn', function(e) {
+            $('#stockslevel').modal('show');
         });
 
+        // Remove a row
+        $(document).on('click', '.remove-row', function () {
+            $(this).closest('tr').remove();
+        });
+
+        // Add a new row in the table
+        $('#addRowBtn').click(function () {
+            const newRow = `
+                <tr>
+                    <td><input type="text" class="form-control description-input" placeholder="Material" onkeyup="this.value = this.value.toUpperCase();"></td>
+                    <td><input type="number" class="form-control quantity-input" placeholder="Quantity" min="1"></td>
+                    <td><button type="button" class="btn btn-danger btn-sm remove-row">Remove</button></td>
+                </tr>
+            `;
+            $('#DescriptionTable tbody').append(newRow);
+        });
     });
 
-        // Function to fetch data based on filters and update the DataTable
-        function fetchAndRenderStocks() {
-            const month = $('#month_select').val();
-            const year = $('#year_select').val();
-            const status = $('#status_select').val();
 
-            $.ajax({
-                url: '/fetch-stocks',
-                method: 'GET',
-                data: { month, year, status },
-                success: function (response) {
-                    renderstocks(response); // Refresh the DataTable with new data
-                },
-                error: function (xhr) {
-                    console.error('Error fetching stocks:', xhr);
-                }
-            });
-        }
 
-        function fetchFilteredactiveStocks() {
-            const month = $('#activefilterMonth').val();
-            const year = $('#activefilterYear').val();
-
-            // Make the AJAX request to fetch filtered stocks
-            $.ajax({
-                url: '/filter-active-stocks',  // Make sure to replace this with your actual API endpoint
-                method: 'GET',
-                data: {
-                    month: month,
-                    year: year
-                },
-                success: function(response) {
-                    // Call the render function with the filtered data
-                    renderactivestocks(response.stocks);
-                    console.log(response, 'Fetched Filtered active Stocks');
-
-                },
-                error: function(xhr, status, error) {
-                    console.error('Error fetching filtered stocks:', error);
-                }
-            });
-        }
 
         function fetchFilteredreleasedStocks() {
             const team_tech = $('#releasedfilterTeamTech').val();
@@ -1272,6 +1356,69 @@
             });
         }
 
+        // Function to save stocks level
+        function save_stocks_level(event) {
+            event.preventDefault(); // Prevent the default form submission
+
+            let rows = [];
+            $('#DescriptionTable tbody tr').each(function () {
+                const description = $(this).find('.description-input').val().trim();
+                const quantity = parseInt($(this).find('.quantity-input').val());
+
+                if (description && quantity && quantity > 0) {
+                    for (let i = 0; i < quantity; i++) {
+                        rows.push({ description: description });
+                    }
+                }
+            });
+
+            // Check if there are rows to save
+            if (rows.length === 0) {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Oops...',
+                    text: 'Please add at least one material with a valid quantity.',
+                });
+                return;
+            }
+
+            // AJAX request to save the stock data
+            $.ajax({
+                url: '/stockslevel', // Ensure this matches your actual route for storing stocks
+                type: 'POST',
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') // Include the CSRF token in the headers
+                },
+                data: { rows: rows },
+                success: function (response) {
+                    // Handle success response
+                    $('#stockslevelform')[0].reset(); // Reset the form fields
+                    $('#DescriptionTable tbody').empty(); // Clear the table rows
+
+                    fetchstocksleveldata(); // Refresh the stock data table
+                    fetchTotalMaterials(); // Refresh the total materials count
+                    fetchTotalActiveDescriptions(); // Refresh the total active descriptions count
+                    selectstocksleveldescription(); // Refresh the select2 dropdowns
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Success!',
+                        text: 'Stock Materials created successfully.',
+                        showConfirmButton: false,
+                        timer: 1500 // Automatically close after 1.5 seconds
+                    });
+                },
+                error: function (xhr, status, error) {
+                    // Handle error response
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Oops...',
+                        text: 'Failed to save stock. Please try again later.',
+                    });
+                    console.error('Error:', xhr.responseText);
+                }
+            });
+        }
+
         // Fetch stock data for the edit modal
         function fetchstoredstocks(id) {
             console.log(id); // Debug: Check if the correct ID is being fetched
@@ -1348,6 +1495,41 @@
             });
         }
 
+        // Fetch stock data for the edit modal
+        function fetchstoredstockslevel(id) {
+            console.log(id); // Debug: Check if the correct ID is being fetched
+
+            // AJAX request to fetch data for the selected ID
+            $.ajax({
+                url: '/stockslevel/' + id,
+                type: 'GET',
+                success: function(response) {
+                    console.log(response);
+
+                    var data = response.stockslevel;
+
+                    // Store the fetched data in global variables
+                    window.fetchedData = {
+                        description: data.description,
+                    };
+
+                    $('#editstockslevelform').data('id', id);
+
+                    $('#editDescription').val(window.fetchedData.description);
+
+
+                },
+                error: function(xhr, status, error) {
+                    console.error(xhr.responseText);
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Oops...',
+                        text: 'Failed to fetch data. Please try again later.',
+                    });
+                }
+            });
+        }
+
         // Function to show/hide additional fields based on status
         function toggleStatusFields(status) {
             // Show the appropriate additional fields, without clearing any data
@@ -1381,7 +1563,6 @@
             // Show/hide fields based on selected status
             toggleStatusFields(status);
         });
-
 
         // Function to update stocks
         function update_stocks(event) {
@@ -1478,6 +1659,73 @@
             });
         }
 
+        // Function to update stocks
+        function update_stocks_level(event) {
+            // Ensure the default button behavior is stopped
+            if (event) event.preventDefault();
+
+            var id = $('#editstockslevelform').data('id'); // Retrieve the stored ID
+
+            var description = $('#editDescription').val();
+
+            // Validation
+            if (!description) {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Oops...',
+                    text: 'Please fill the required fields.',
+                });
+                return;
+            }
+
+            // Show a confirmation dialog before saving
+            Swal.fire({
+                title: 'Are you sure?',
+                text: "Do you want to save these changes?",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonText: 'Yes, save it!',
+                cancelButtonText: 'Cancel',
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+            }).then(function (result) {
+                if (result.isConfirmed) {
+                    // Proceed with AJAX request to update the stock
+                    $.ajax({
+                        url: '/stockslevel/' + id,
+                        type: 'PUT',
+                        headers: {
+                            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                        },
+                        data: {
+                            description: description,
+                        },
+                        success: function(response) {
+                            console.log(response);
+
+                            fetchstocksleveldata(); // Refresh stock data
+
+                            Swal.fire({
+                                icon: 'success',
+                                title: 'Updated!',
+                                text: 'Your changes have been saved.',
+                                showConfirmButton: false,
+                                timer: 1500
+                            });
+                        },
+                        error: function(xhr, status, error) {
+                            console.error(xhr.responseText);
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'Oops...',
+                                text: 'Failed to update the stock. Please try again later.',
+                            });
+                        }
+                    });
+                }
+            });
+        }
+
         // Function to delete stocks
         $(document).on('click', '.delete', function() {
             var id = $(this).data('id');
@@ -1552,6 +1800,62 @@
             });
         });
 
+        // Function to delete stocks level
+        $(document).on('click', '.deletestockslevel', function() {
+            var id = $(this).data('id');
+
+            Swal.fire({
+                title: 'Are you sure?',
+                text: "You won't be able to revert this!",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Yes, delete it!'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    $.ajax({
+                        url: '/stockslevel/' + id, // Adjust the URL based on your route
+                        type: 'DELETE',
+                        headers: {
+                            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') // Include CSRF token
+                        },
+                        success: function(response) {
+                            if (response.status === "success") {
+                                Swal.fire({
+                                    icon: 'success',
+                                    title: 'Deleted!',
+                                    text: response.message,
+                                    showConfirmButton: false,
+                                    timer: 1500 // Automatically close after 1.5 seconds
+                                });
+                                fetchstocksleveldata(); // Refresh stock data
+                                fetchTotalMaterials();
+                                fetchTotalDescriptionsExcludingActive();
+                                fetchTotalActiveDescriptions();
+                            } else {
+                                Swal.fire({
+                                    icon: 'error',
+                                    title: 'Oops...',
+                                    text: 'Failed to delete the record. Please try again later.',
+                                });
+                            }
+                        },
+                        error: function(xhr, status, error) {
+                            // Handle error response
+                            console.error(xhr.responseText);
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'Oops...',
+                                text: 'Failed to delete the record. Please try again later.',
+                            });
+                        }
+                    });
+                }
+            });
+        });
+
+
         // Function to fetch material counts
         function fetchMaterialCounts() {
             $.ajax({
@@ -1599,6 +1903,48 @@
             });
         }
 
+        function fetchTotalMaterials() {
+            $.ajax({
+                url: '/total-stocks-level', // The route for the controller
+                type: 'GET',
+                success: function(response) {
+                    // Update the card's total count
+                    $('#totalstockslevel').text(response.totalDescriptions); // Update with the correct JSON key
+                },
+                error: function(xhr, status, error) {
+                    console.error('Failed to fetch total materials:', error);
+                }
+            });
+        }
+
+        function fetchTotalActiveDescriptions() {
+            $.ajax({
+                url: '/total-active-descriptions', // The route for the controller
+                type: 'GET',
+                success: function(response) {
+                    // Update the card's total count
+                    $('#availablestockslevel').text(response.totalActiveDescriptions); // Update with the correct JSON key
+                },
+                error: function(xhr, status, error) {
+                    console.error('Failed to fetch total active descriptions:', error);
+                }
+            });
+        }
+
+        function fetchTotalDescriptionsExcludingActive() {
+            $.ajax({
+                url: '/total-descriptions-excluding-active', // The route for the controller
+                type: 'GET',
+                success: function(response) {
+                    // Update the UI with the total sum of descriptions
+                    $('#totalDescriptions').text(response.totalCount); // Display the total sum
+                },
+                error: function(xhr, status, error) {
+                    console.error('Failed to fetch total descriptions:', error);
+                }
+            });
+        }
+
         // Function to fetch stock data
         function fetchstockdata() {
             $.ajax({
@@ -1614,17 +1960,17 @@
             });
         }
 
-        // Function to fetch active stocks
-        function fetchactivestocks() {
+        // Function to fetch stock data
+        function fetchstocksleveldata() {
             $.ajax({
-                url: '/fetch-active-stocks',
+                url: '/stockslevel',
                 type: 'GET',
                 success: function(response) {
-                    console.log(response); // Log the response to confirm it's correct
-                    renderactivestocks(response); // Pass the response directly to renderactivestocks
+                    renderstockslevel(response);
+                    console.log(response, 'response1111111');
                 },
                 error: function(xhr, status, error) {
-                    console.error(xhr.responseText); // Log any errors
+                    console.error(xhr.responseText);
                 }
             });
         }
@@ -1689,7 +2035,7 @@
                         orderable: true, // Allow sorting
                     },
                     {
-                        data: 'description',
+                        data: 'descriptionname.description',
                         render: data => data ? data : 'N/A',
                         orderable: true // Allow sorting
                     },
@@ -1704,20 +2050,13 @@
                         orderable: true // Allow sorting
                     },
                     {
-                        data: 'date_active',
-                        render: data => data
-                            ? new Date(data).toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' })
-                            : 'N/A',
-                        orderable: true // Allow sorting
-                    },
-                    {
                         data: 'status',
                         render: function(data, type, row) {
                             var statusText;
                             var statusClass;
 
                             if (data == 0) {
-                                statusText = 'Active';
+                                statusText = 'Activation';
                                 statusClass = 'badge badge-success text-light';
                             } else if (data == 1) {
                                 statusText = 'Released';
@@ -1754,71 +2093,60 @@
         }
 
         // Function to render active the DataTable
-        function renderactivestocks(data) {
+        function renderstockslevel(data) {
             console.log(data); // Log the data to check it
 
-            var table = $('#activestockstable').DataTable({
+             var table = $('#stocksleveltable').DataTable({
                 destroy: true,
-                data: data, // Directly use the response data as an array
+                data: data.stockslevel,
+                stripeClasses: [], // Disable striping
                 order: [[0, 'asc']], // Default sorting by the first column (product_name) in ascending order
                 columns: [
                     {
-                        data: 'product_name',
-                        render: data => data ? data : 'N/A',
-                        orderable: true
-                    },
-                    {
                         data: 'description',
                         render: data => data ? data : 'N/A',
-                        orderable: true
+                        orderable: true // Allow sorting
                     },
                     {
-                        data: 'serial_no',
-                        render: data => data ? data : 'N/A',
-                        orderable: true
-                    },
-                    {
-                        data: 'account_no',
-                        render: data => data ? data : 'N/A',
-                        orderable: true
-                    },
-                    {
-                        data: 'date_active',
-                        render: data => data
-                            ? new Date(data).toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' })
-                            : 'N/A',
-                        orderable: true
-                    },
-                    {
-                        data: 'status',
-                        render: function(data) {
-                            var statusText, statusClass;
-                            switch (data) {
-                                case 0:
-                                    statusText = 'Active';
-                                    statusClass = 'badge badge-success text-light';
-                                    break;
-                                case 1:
-                                    statusText = 'Released';
-                                    statusClass = 'badge badge-primary text-light';
-                                    break;
-                                case 2:
-                                    statusText = 'Activated';
-                                    statusClass = 'badge badge-info text-light';
-                                    break;
-                                case 3:
-                                    statusText = 'Repair';
-                                    statusClass = 'badge badge-danger text-light';
-                                    break;
-                                default:
-                                    statusText = 'Unknown';
-                                    statusClass = 'badge badge-secondary text-light';
-                                    break;
+                        data: 'stocks_level_status',
+                        render: function(data, type, row) {
+                            var statusText;
+                            var statusClass;
+
+                            if (data == 0) {
+                                statusText = 'Activation';
+                                statusClass = 'badge badge-secondary text-light';
+                            } else if (data == 1) {
+                                statusText = 'Released';
+                                statusClass = 'badge badge-primary text-light';
+                            } else if (data == 2) {
+                                statusText = 'Activated';
+                                statusClass = 'badge badge-info text-light';
+                            } else if (data == 3) {
+                                statusText = 'Repair';
+                                statusClass = 'badge badge-danger text-light';
+                            } else if (data == 4) {
+                                statusText = 'Active';
+                                statusClass = 'badge badge-success text-light';
+                            } else {
+                                statusText = 'Unknown';
+                                statusClass = 'badge badge-secondary text-light';
                             }
-                            return `<div class="status-bg ${statusClass}">${statusText}</div>`;
+
+                            return '<div class="status-bg ' + statusClass + '">' + statusText + '</div>';
                         },
                         className: 'text-nowrap',
-                        orderable: true
+                        orderable: true // Allow sorting by status
+                    },
+                    {
+                        data: null,
+                        render: function(data, type, row) {
+                            return '<button class="editstockslevel btn btn-success btn-sm mr-1" data-toggle="modal" data-target="#editcreatestockslevel" data-id="' +
+                                row.id + '"><i class="fas fa-edit"></i></button>' +
+                                '<button class="deletestockslevel btn btn-danger btn-sm" data-id="' + row.id +
+                                '"><i class="fas fa-trash-alt"></i></button>';
+                        },
+                        orderable: false, // Disable sorting for action buttons
                     }
                 ]
             });
@@ -2045,7 +2373,7 @@
             $('#stocks_date_repaired').val('');
 
             // Show/hide fields based on selected status
-            if (status == "2") { // Activated
+            if (status == "2" || status == "0") { // Activated or Activation
                 $('#activatedFields').removeClass('d-none');
                 $('#repairFields').addClass('d-none');
                 $('#releasedFields').addClass('d-none');
@@ -2144,12 +2472,12 @@
         }
 
         // Preview PDF Button Click (opens PDF in new tab)
-        $('#activestocksprintpdf').click(function () {
+        $('#stockslevelprintpdf').click(function () {
             const { jsPDF } = window.jspdf;
             var doc = new jsPDF();
-            doc.text("Stocks Data", 20, 20);
+            doc.text("Stocks Levels Data", 20, 20);
 
-            var { headers, rows } = getTableData('#activestockstable');
+            var { headers, rows } = getTableData('#stocksleveltable');
 
             // Generate the PDF table
             doc.autoTable({
@@ -2167,16 +2495,16 @@
         });
 
         // Print Excel Button Click
-        $('#activestocksprintexcel').click(function () {
+        $('#stockslevelprintexcel').click(function () {
             var wb = XLSX.utils.book_new();
-            var { headers, rows } = getTableData('#activestockstable');
+            var { headers, rows } = getTableData('#stocksleveltable');
 
             // Create Excel sheet
             var ws = XLSX.utils.aoa_to_sheet([headers, ...rows]);
-            XLSX.utils.book_append_sheet(wb, ws, "Stocks");
+            XLSX.utils.book_append_sheet(wb, ws, "Stocks Level");
 
             // Save Excel file
-            XLSX.writeFile(wb, "active_stocks_data.xlsx");
+            XLSX.writeFile(wb, "stocks_leves_data.xlsx");
         });
 
         // Function to get table headers and rows
@@ -2359,9 +2687,9 @@
         });
 
         // Initialize Select2 for filter dropdowns
-        $('#activefilterMonth, #activefilterYear ').select2({
+        $('#stockslevelfilterMonth, #stockslevelfilterYear ').select2({
             width: '100%',
-            dropdownParent: '#activestocks'  // Adjust the dropdown position if needed
+            dropdownParent: '#stockslevel'  // Adjust the dropdown position if needed
         });
 
         // Initialize Select2 for filter dropdowns
@@ -2381,6 +2709,56 @@
             width: '100%',
             dropdownParent: '#repairstocks'  // Adjust the dropdown position if needed
         });
+
+        // Initialize Select2 on the description dropdown
+        $('#stocks_description').select2({
+            dropdownParent: '#createstocks', // Specify the parent for the dropdown
+        });
+
+        function selectstocksleveldescription() {
+            // Initialize Select2 on the description dropdown
+            $('#stocks_description').select2({
+                dropdownParent: '#createstocks', // Specify the parent for the dropdown
+            });
+
+            // AJAX request to fetch the stocks levels
+            $.ajax({
+                url: '/stockslevel', // Ensure this URL is correct
+                type: 'GET',
+                success: function(response) {
+                    console.log(response); // Log the response for debugging
+
+                    // Check if the 'stockslevel' data is available in the response
+                    if (response && response.stockslevel) {
+                        var stockslevel = response.stockslevel; // Assuming the data is in response.stockslevel
+                        var select = $('#stocks_description');
+
+                        // Clear previous options
+                        select.empty();
+
+                        // Add a default "Select Materials" option
+                        select.append('<option selected disabled>Select Materials</option>');
+
+                        // Loop through the stockslevel data and append options to the select dropdown
+                        $.each(stockslevel, function(index, item) {
+                            // Only include items where stocks_level_status is 4 (active)
+                            if (item.stocks_level_status === 4) {
+                                // Append the description only
+                                select.append('<option value="' + item.id + '">' + item.description + '</option>');
+                            }
+                        });
+
+                        // Reinitialize select2 after appending options
+                        select.trigger('change'); // This is to refresh the Select2 dropdown
+                    } else {
+                        console.error("No stockslevel data found in the response");
+                    }
+                },
+                error: function(xhr, status, error) {
+                    console.error("Error fetching stock information:", error);
+                }
+            });
+        }
 
 </script>
 @endpush

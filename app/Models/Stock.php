@@ -15,10 +15,11 @@ class Stock extends Model
     // The attributes that are mass assignable
     protected $fillable = [
         'product_name',
-        'description',
+        'description_id',
         'team_tech',
         'account_no',
         'j_o_no',
+        'sar_no',
         'serial_no',
         'serial_new_no',
         'ticket_no',
@@ -38,5 +39,8 @@ class Stock extends Model
         'status' => 'integer',
     ];
 
-    // You can add any other methods or relationships here
+
+    public function descriptionname(){
+        return $this->belongsTo(StocksLevel::class, 'description_id');
+    }
 }

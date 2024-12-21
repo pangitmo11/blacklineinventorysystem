@@ -2,6 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\StockController;
+use App\Http\Controllers\StocksLevelController;
 use App\Http\Controllers\PageController;  // Import PageController
 
 // Root route
@@ -19,9 +20,10 @@ Route::get('/reports', [PageController::class, 'reports'])->name('reports'); // 
 // Prefix '/stocks' is now handled here, no need to repeat '/stocks' in the route definition
 Route::resource('stocks', StockController::class); // Resource route for StockController
 
-Route::get('/fetch-stocks', [StockController::class, 'fetchStocks'])->name('fetch.stocks');
+// Prefix '/stockslevel' is now handled here, no need to repeat '/stockslevel' in the route definition
+Route::resource('stockslevel', StocksLevelController::class); // Resource route for StockController
 
-Route::get('/filter-active-stocks', [StockController::class, 'filtersActiveStocks'])->name('filter.active.stocks');
+Route::get('/fetch-stocks', [StockController::class, 'fetchStocks'])->name('fetch.stocks');
 
 Route::get('/filter-released-stocks', [StockController::class, 'filtersReleasedStocks'])->name('filter.released.stocks');
 
@@ -37,10 +39,15 @@ Route::get('/fetch-repaired-years', [StockController::class, 'fetchrepairedYears
 
 Route::get('/fetch-years', [StockController::class, 'fetchYears'])->name('fetch.years');
 
-Route::get('/fetch-active-stocks', [StockController::class, 'fetchActiveStocks'])->name('fetch.active.stocks');
-
 Route::get('/fetch-released-stocks', [StockController::class, 'fetchReleasedStocks'])->name('fetch.released.stocks');
 
 Route::get('/fetch-activated-stocks', [StockController::class, 'fetchActivatedStocks'])->name('fetch.activated.stocks');
 
 Route::get('/fetch-repaired-stocks', [StockController::class, 'fetchRepairedStocks'])->name('fetch.repaired.stocks');
+
+Route::get('/total-stocks-level', [StocksLevelController::class, 'getTotalstockslevel']);
+
+Route::get('/total-active-descriptions', [StocksLevelController::class, 'getTotalActiveDescriptions']);
+
+Route::get('/total-descriptions-excluding-active', [StocksLevelController::class, 'getTotalDescriptionsExcludingActive']);
+

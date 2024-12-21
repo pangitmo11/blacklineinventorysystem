@@ -11,7 +11,7 @@ class StockController extends Controller
 {
     public function index()
     {
-        $stocks = Stock::all();  // Retrieve all stock items
+        $stocks = Stock::with(['descriptionname:id,description'])->get();
 
         // Return response as JSON with 'stocks' key
         return response()->json(['stocks' => $stocks]);
@@ -39,33 +39,6 @@ class StockController extends Controller
 
         $stocks = $query->get();
 
-        return response()->json(['stocks' => $stocks]);
-    }
-
-    public function filtersActiveStocks(Request $request)
-    {
-        $month = $request->input('month');
-        $year = $request->input('year');
-
-        $query = Stock::query();
-
-        // Filter by month if provided and not 'All'
-        if ($month && $month !== 'All') {
-            $query->whereMonth('date_active', '=', $month);
-        }
-
-        // Filter by year if provided and not 'All'
-        if ($year && $year !== 'All') {
-            $query->whereYear('date_active', '=', $year);
-        }
-
-        // Filter by active status (status = 0)
-        $query->where('status', '=', 0);
-
-        // Fetch the filtered data
-        $stocks = $query->get();
-
-        // Send the response back as JSON
         return response()->json(['stocks' => $stocks]);
     }
 
@@ -219,19 +192,6 @@ class StockController extends Controller
         ]);
     }
 
-    public function fetchActiveStocks()
-    {
-        $activeStocks = DB::table('stocks_tbl')
-            ->whereNotNull('date_active') // Ensure 'date_active' is not null
-            ->where('status', 0)         // Include only active status
-            ->where('status', '!=', 3)   // Exclude repaired status
-            ->where('status', '!=', 2)   // Exclude activated status
-            ->where('status', '!=', 1)   // Exclude released status
-            ->get();
-
-        return response()->json($activeStocks);
-    }
-
 
     public function fetchReleasedStocks()
     {
@@ -282,6 +242,7 @@ class StockController extends Controller
             'team_tech' => 'nullable|string|max:255',
             'account_no' => 'nullable|string|max:255',
             'j_o_no' => 'nullable|string|max:255',
+            'sar_no' => 'nullable|string|max:255',
             'serial_no' => 'nullable|string|max:255',
             'serial_new_no' => 'nullable|string|max:255',
             'ticket_no' => 'nullable|string|max:255',
