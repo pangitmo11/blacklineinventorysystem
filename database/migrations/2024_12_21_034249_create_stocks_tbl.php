@@ -18,7 +18,8 @@ class CreateStocksTbl extends Migration
             $table->string('product_name')->nullable();
             $table->unsignedBigInteger('description_id')->nullable();
             $table->string('team_tech')->nullable();
-            $table->integer('quantity')->default(0)->nullable();
+            $table->string('subsname')->nullable();
+            $table->string('subsaccount_no')->nullable();
             $table->string('account_no')->nullable();
             $table->string('j_o_no')->nullable();
             $table->string('sar_no')->nullable();
@@ -33,7 +34,7 @@ class CreateStocksTbl extends Migration
             $table->timestamps();
 
             // Foreign Key Constraints
-            $table->foreign('description_id')->references('id')->on('stocks_level')->onDelete('cascade');
+            $table->foreign('description_id')->references('id')->on('stocks_level')->onDelete('set null');
         });
 
     }

@@ -9,26 +9,24 @@ class StocksLevel extends Model
 {
     use HasFactory;
 
-    // Specify the table name if it doesn't follow Laravel's naming convention
+    // Table associated with the model
     protected $table = 'stocks_level';
 
-    // Define the fillable fields for mass assignment
+    // Fillable attributes
     protected $fillable = [
         'description',
         'stocks_level_status',
     ];
 
-    // Set default attributes
-    protected $attributes = [
-        'stocks_level_status' => 4, // Default to active
-    ];
-
-    // Define the relationship with the Stocks model
+    // Relationship to the Stocks table
     public function stocks()
     {
-        return $this->hasMany(Stocks::class, 'description_id');
+        return $this->hasMany(Stock::class, 'description_id');
     }
 
-    // If you want to customize the date format for the timestamps, you can uncomment the following:
-    // protected $dateFormat = 'Y-m-d H:i:s';
+    // Relationship to the StockMaterials table
+    public function stockMaterials()
+    {
+        return $this->hasMany(StockMaterial::class, 'description_id');
+    }
 }

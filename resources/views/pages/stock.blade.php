@@ -39,9 +39,9 @@
 
         <!-- Total Activision Materials Card -->
         <div class="col-lg-3 col-md-6 mb-3">
-            <div class="card bg-warning text-center text-white shadow">
+            <div class="card bg-secondary text-center text-white shadow">
                 <div class="card-body">
-                    <h5 class="card-title" style="font-size: 1rem;">Total For Activision</h5>
+                    <h5 class="card-title" style="font-size: 1rem;">Total For Activation</h5>
                     <p class="card-text" id="active-count" style="font-size: 1.5rem;">0</p>
                 </div>
             </div>
@@ -68,60 +68,6 @@
         </div>
     </div>
 
-    <!-- Filter Card -->
-    <div class="card mb-4 shadow">
-        <div class="card-header">
-            <i class="fas fa-filter" style="margin-right: 5px;"></i>
-            <strong>Filter</strong>
-        </div>
-        <div class="card-body">
-            <!-- Filter Form -->
-            <form id="filterForm">
-                <div class="row">
-                    <!-- Month Filter -->
-                    <div class="col-md-4 mb-3">
-                        <label for="monthSelect">Month</label>
-                        <select id="month_select" class="form-control select2">
-                            <option value="All">All</option>
-                            <option>January</option>
-                            <option>February</option>
-                            <option>March</option>
-                            <option>April</option>
-                            <option>May</option>
-                            <option>June</option>
-                            <option>July</option>
-                            <option>August</option>
-                            <option>September</option>
-                            <option>October</option>
-                            <option>November</option>
-                            <option>December</option>
-                        </select>
-                    </div>
-
-                    <!-- Year Filter -->
-                    <div class="col-md-4 mb-3">
-                        <label for="year_select">Year</label>
-                        <select id="year_select" class="form-control select2">
-                            <option value="All">All</option>
-                        </select>
-                    </div>
-
-                    <!-- Status Filter -->
-                    <div class="col-md-4 mb-3">
-                        <label for="status_select">Status</label>
-                        <select id="status_select" class="form-control select2">
-                            <option value="All">All</option>
-                            <option value="1">Released</option>
-                            <option value="2">Activision</option>
-                            <option value="2">Activated</option>
-                            <option value="3">Repair</option>
-                        </select>
-                    </div>
-                </div>
-            </form>
-        </div>
-    </div>
-
     <!-- buttons -->
     <div class="row">
         <!-- Left-aligned buttons -->
@@ -135,11 +81,14 @@
             <button class="btn btn-sm btn-primary mb-2 mr-2" data-toggle="modal" data-target="#releasedstocks">
                 <i class="fas fa-list"></i> Released
             </button>
-            <button class="btn btn-sm btn-info mb-2 mr-2" data-toggle="modal" data-target="#installationstocks">
+            <button class="btn btn-sm btn-info mb-2 mr-2" id="installationbtn">
                 <i class="fas fa-list"></i> Installation
             </button>
-            <button class="btn btn-sm btn-danger mb-2" data-toggle="modal" data-target="#repairstocks">
+            <button class="btn btn-sm btn-danger mb-2 mr-2" data-toggle="modal" data-target="#repairstocks">
                 <i class="fas fa-list"></i> Repair
+            </button>
+            <button class="btn btn-sm btn-warning mb-2" data-toggle="modal" data-target="#dmurstocks">
+                <i class="fas fa-list"></i> DMUR
             </button>
         </div>
 
@@ -173,7 +122,7 @@
                                 </div>
                                 <div class="form-check">
                                     <input class="form-check-input" type="radio" name="status" value="0" id="stocks_activation">
-                                    <label class="form-check-label" for="stocks_activation"><span class='badge bg-success'>Status as ACTIVATION</span></label>
+                                    <label class="form-check-label" for="stocks_activation"><span class='badge bg-secondary'>Status as ACTIVATION</span></label>
                                 </div>
                                 <div class="form-check">
                                     <input class="form-check-input" type="radio" name="status" value="2" id="stocks_activated">
@@ -270,8 +219,26 @@
                                 <div class="form-group">
                                     <label for="create_stocks"><strong>SAR No.</strong></label>
                                     <input type="text" onkeyup="this.value = this.value.toUpperCase();"
-                                        class="form-control" id="stocks_jo_no" placeholder="Enter J.O No."
-                                        data-name="jo_account_no" name="jo_no">
+                                        class="form-control" id="stocks_sar_no" placeholder="Enter SAR No."
+                                        data-name="stocks_sar_no" name="sar_no">
+                                </div>
+                            </div>
+
+                            <div class="col-md-12 mb-3">
+                                <div class="form-group">
+                                    <label for="create_stocks"><strong>Subscriber Name</strong></label>
+                                    <input type="text" onkeyup="this.value = this.value.split(' ').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ');"
+                                        class="form-control" id="stocks_subscriber_name" placeholder="Enter Subscriber Name"
+                                        data-name="stocks_subscriber_name" name="subsname">
+                                </div>
+                            </div>
+
+                            <div class="col-md-12 mb-3">
+                                <div class="form-group">
+                                    <label for="create_stocks"><strong>Subscriber Account No.</strong></label>
+                                    <input type="text" onkeyup="this.value = this.value.toUpperCase();"
+                                        class="form-control" id="stocks_subscriber_account_no" placeholder="Enter Subscriber Account No."
+                                        data-name="stocks_subscriber_account_no" name="subacc">
                                 </div>
                             </div>
 
@@ -335,15 +302,15 @@
                         <div class="col-md-12">
                             <div class="form-group">
                                 <div class="form-check">
-                                    <input class="form-check-input" type="radio" name="edit_status" value="0" id="editstocks_active">
-                                    <label class="form-check-label" for="editstocks_active">
-                                        <span class='badge bg-success'>Status as ACTIVE</span>
-                                    </label>
-                                </div>
-                                <div class="form-check">
                                     <input class="form-check-input" type="radio" name="edit_status" value="1" id="editstocks_released">
                                     <label class="form-check-label" for="editstocks_released">
                                         <span class='badge bg-primary'>Status as RELEASED</span>
+                                    </label>
+                                </div>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="radio" name="edit_status" value="0" id="editstocks_activation">
+                                    <label class="form-check-label" for="editstocks_activation">
+                                        <span class='badge bg-secondary'>Status as ACTIVATION</span>
                                     </label>
                                 </div>
                                 <div class="form-check">
@@ -364,11 +331,11 @@
 
                         <!-- Default form fields -->
                         <div class="col-md-12 mb-3">
-                            <div class="form-group">
-                                <label for="create_stocks"><strong>Description</strong></label>
-                                <input type="text" onkeyup="this.value = this.value.split(' ').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ');"
-                                    class="form-control" id="editstocks_description" placeholder="Enter Description"
-                                    data-name="stocks_description" name="description">
+                            <div class="form-group" id="quantity_field">
+                                <label for="editcreate_stocks"><strong>Description</strong></label>
+                                <select class="form-control" style="width: 100%" id="editstocks_description" name="description_name[]" multiple="multiple">
+                                    <option disabled selected> Select Materials</option>
+                                </select>
                             </div>
                         </div>
 
@@ -443,6 +410,34 @@
                                         data-name="jo_account_no" name="jo_no">
                                 </div>
                             </div>
+
+                            <div class="col-md-12 mb-3">
+                                <div class="form-group">
+                                    <label for="create_stocks"><strong>SAR No.</strong></label>
+                                    <input type="text" onkeyup="this.value = this.value.toUpperCase();"
+                                        class="form-control" id="editstocks_sar_no" placeholder="Enter SAR No."
+                                        data-name="stocks_sar_no" name="sar_no">
+                                </div>
+                            </div>
+
+                            <div class="col-md-12 mb-3">
+                                <div class="form-group">
+                                    <label for="create_stocks"><strong>Subscriber Name</strong></label>
+                                    <input type="text" onkeyup="this.value = this.value.split(' ').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ');"
+                                        class="form-control" id="editstocks_subscriber_name" placeholder="Enter Subscriber Name"
+                                        data-name="stocks_subscriber_name" name="subsname">
+                                </div>
+                            </div>
+
+                            <div class="col-md-12 mb-3">
+                                <div class="form-group">
+                                    <label for="create_stocks"><strong>Subscriber Account No.</strong></label>
+                                    <input type="text" onkeyup="this.value = this.value.toUpperCase();"
+                                        class="form-control" id="editstocks_subscriber_account_no" placeholder="Enter Subscriber Account No."
+                                        data-name="stocks_subscriber_account_no" name="subacc">
+                                </div>
+                            </div>
+
                             <div class="col-md-12 mb-3">
                                 <div class="form-group">
                                     <label for="editcreate_stocks"><strong>Date Used</strong></label>
@@ -753,12 +748,10 @@
                             class="table table-sm display table-bordered table-responsive-md table-vcenter js-dataTable-buttons text-center dataTable no-footer w-100">
                             <thead class="table-dark">
                             <tr>
-                                <th>Account No.</th>
-                                <th>Product Name</th>
-                                <th>Description</th>
-                                <th>Serial No.</th>
-                                <th>Team Tech</th>
                                 <th>Date Released</th>
+                                <th>Materials</th>
+                                <th>Quantity</th>
+                                <th>Team Tech</th>
                                 <th>Status</th>
                             </tr>
                         </thead>
@@ -932,6 +925,89 @@
         </div>
     </div>
 
+    <!-- dmur Stocks Modal -->
+    <div class="modal fade" id="dmurstocks" tabindex="-1" role="dialog" aria-labelledby="repairstocksLabel"
+        aria-hidden="true" data-backdrop="static" data-keyboard="false">
+        <div class="modal-dialog modal-dialog-centered modal-xl">
+            <div class="modal-content">
+                <!-- Modal Header -->
+                <div class="modal-header bg-warning text-white">
+                    <h5 class="modal-title" id="repairstocksLabel">DMUR Stocks</h5>
+                    <button type="button" class="btn-close" data-dismiss="modal" aria-label="Close"></button>
+                </div>
+
+                <!-- Modal Body -->
+                <div class="modal-body">
+                    <!-- Filter Card -->
+                    <div class="card mb-4 shadow">
+                        <div class="card-header">
+                            <i class="fas fa-filter"></i> Filter
+                        </div>
+                        <div class="card-body">
+                            <div class="row">
+                                <!-- Month Filter -->
+                                <div class="col-md-6 mb-3">
+                                    <label for="filterMonth" class="form-label">Month</label>
+                                    <select id="dmurfilterMonth" class="form-select dmurfilterMonth">
+                                        <option value="All" selected>All</option>
+                                        <option value="1">January</option>
+                                        <option value="2">February</option>
+                                        <option value="3">March</option>
+                                        <option value="4">April</option>
+                                        <option value="5">May</option>
+                                        <option value="6">June</option>
+                                        <option value="7">July</option>
+                                        <option value="8">August</option>
+                                        <option value="9">September</option>
+                                        <option value="10">October</option>
+                                        <option value="11">November</option>
+                                        <option value="12">December</option>
+                                    </select>
+                                </div>
+
+                                <!-- Year Filter -->
+                                <div class="col-md-6 mb-3">
+                                    <label for="filterYear" class="form-label">Year</label>
+                                    <select id="dmurfilterYear" class="form-select dmurfilterYear">
+                                        <option value="All" selected>All</option>
+                                        <option value="2023">2023</option>
+                                        <option value="2024">2024</option>
+                                        <option value="2025">2025</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <button class="btn btn-warning mb-3" style="margin-right: 5px;" id="dmurstocksprintpdf">
+                        <i class="fas fa-file-pdf"></i> Print PDF
+                    </button>
+                    <button class="btn btn-info mb-3" id="dmurstocksprintexcel">
+                        <i class="fas fa-file-excel"></i> Print Excel
+                    </button>
+                    <table id="dmurstockstable"
+                            class="table table-sm display table-bordered table-responsive-md table-vcenter js-dataTable-buttons text-center dataTable no-footer w-100">
+                            <thead class="table-dark">
+                            <tr>
+                                <th>Date Used</th>
+                                <th>SAR No.</th>
+                                <th>Ticket No.</th>
+                                <th>J.O No.</th>
+                                <th>Materials</th>
+                                <th>Subscriber Account No.</th>
+                                <th>Subscriber Name</th>
+                                <th>Tech Name</th>
+                            </tr>
+                        </thead>
+                        <tbody id="dmurstockstableBody">
+                            <!-- Table rows will be dynamically populated -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
 </div>
 
 @endsection
@@ -986,6 +1062,9 @@
         //triggers to fetch repaired stocks data
         fetchrepairedstocks();
 
+        //triggers to fetch dmur stocks data
+        fetchdmurstocks();
+
         // Trigger the function to fetch material counts on page load
         fetchMaterialCounts();
 
@@ -1009,6 +1088,9 @@
 
         // Trigger fetchFilteredStocks when the month or year filter changes
         fetchFilteredrepairedStocks();
+
+        // Trigger fetchFilteredStocks when the month or year filter changes
+        fetchFiltereddmurStocks();
 
         // Trigger fetchFilteredStocks when the month or year filter changes
         selectstocksleveldescription();
@@ -1064,11 +1146,16 @@
             fetchFilteredactivatedStocks();
         });
 
+
         // Trigger fetchFilteredStocks when the month, year filter changes
         $('#repairedfilterMonth, #repairedfilterYear').change(function() {
             fetchFilteredrepairedStocks();
         });
 
+        // Trigger fetchFilteredStocks when the month, year filter changes
+        $('#dmurfilterMonth, #dmurfilterYear').change(function() {
+            fetchFiltereddmurStocks();
+        });
 
         // Load dynamic active years
         $.ajax({
@@ -1093,7 +1180,7 @@
             url: '/fetch-activated-years',
             method: 'GET',
             success: function (years) {
-                let yearSelect = $('#activatedfilterYear');
+                let yearSelect = $('#activatedfilterYear, #dmurfilterYear');
                 yearSelect.empty(); // Clear current options
                 yearSelect.append('<option value="All">All</option>'); // Add default option
 
@@ -1129,6 +1216,10 @@
             $('#stockslevel').modal('show');
         });
 
+        $(document).on('click', '#installationbtn', function(e) {
+            $('#installationstocks').modal('show');
+        });
+
         // Remove a row
         $(document).on('click', '.remove-row', function () {
             $(this).closest('tr').remove();
@@ -1146,8 +1237,6 @@
             $('#DescriptionTable tbody').append(newRow);
         });
     });
-
-
 
 
         function fetchFilteredreleasedStocks() {
@@ -1224,6 +1313,30 @@
             });
         }
 
+        function fetchFiltereddmurStocks() {
+            const month = $('#dmurfilterMonth').val();
+            const year = $('#dmurfilterYear').val();
+
+            // Make the AJAX request to fetch filtered stocks
+            $.ajax({
+                url: '/filter-dmur-stocks',  // Make sure to replace this with your actual API endpoint
+                method: 'GET',
+                data: {
+                    month: month,
+                    year: year
+                },
+                success: function(response) {
+                    // Call the render function with the filtered data
+                    renderdmurstocks(response.stocks);
+                    console.log(response, 'Fetched Filtered active Stocks');
+
+                },
+                error: function(xhr, status, error) {
+                    console.error('Error fetching filtered stocks:', error);
+                }
+            });
+        }
+
         function fetchFilterOptions() {
             // Make the AJAX request to fetch filter options
             $.ajax({
@@ -1261,11 +1374,14 @@
             // Get the selected status from the radio buttons
             var status = $('input[name="status"]:checked').val();
 
+            // Get values from form fields
             var account_no = $('#stocks_account_no').val();
             var serial_no = $('#stocks_serial_no').val();
             var product_name = $('#stocks_product_name').val();
-            var description = $('#stocks_description').val();
+            var description_id = $('#stocks_description').val();  // This will return an array
             var team_tech = $('#stocks_team_tech').val();
+            var subsname = $('#stocks_subscriber_name').val();
+            var subsaccount_no = $('#stocks_subscriber_account_no').val();
             var date_active = $('#stocks_date_active').val();
             var date_released = $('#stocks_date_released').val();
             var date_used = $('#stocks_date_used').val();
@@ -1273,14 +1389,14 @@
             var ticket_no = $('#ticket_no').val();
             var serial_new_no = $('#stocks_serial_new_no').val();
             var j_o_no = $('#stocks_jo_no').val();
+            var sar_no = $('#stocks_sar_no').val();
 
-            // Check if input fields are empty
-            if (!serial_no) {
-                // Display a SweetAlert prompt message
+            // Check if required fields are empty
+            if (!product_name || !status) {
                 Swal.fire({
                     icon: 'error',
                     title: 'Oops...',
-                    text: 'Please fill the required fields.', // Prompt message
+                    text: 'Please fill all required fields.',
                 });
                 return; // Exit the function without submitting the form
             }
@@ -1288,8 +1404,10 @@
             // Prepare data for the AJAX request
             var data = {
                 product_name: product_name,
-                description: description,
+                description_id: description_id,  // Multi-select field, send as array
                 team_tech: team_tech,
+                subsname: subsname,
+                subsaccount_no: subsaccount_no,
                 account_no: account_no,
                 serial_no: serial_no,
                 date_active: date_active,
@@ -1300,43 +1418,48 @@
                 ticket_no: ticket_no,
                 serial_new_no: serial_new_no,
                 j_o_no: j_o_no,
+                sar_no: sar_no
             };
 
+            // Send the data via AJAX
             $.ajax({
                 url: '/stocks', // This should match the route for storing stocks (POST /stocks)
                 type: 'POST',
                 headers: {
-                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') // Include the CSRF token in the headers
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content'), // Include the CSRF token in the headers
                 },
                 data: data,
                 success: function(response) {
                     console.log(response);
 
                     // Check if the response is successful
-                    if(response.status === 'success') {
-                        fetchstockdata(); // Refresh stock data
-                        fetchactivestocks(); // Refresh active stocks
-                        fetchreleasedstocks(); // Refresh released stocks
-                        fetchactivatedstocks(); // Refresh activated stocks
-                        fetchrepairedstocks(); // Refresh repaired stocks
-                        fetchMaterialCounts(); // Fetch material counts
+                    if (response.status === 'success') {
+                        // Refresh stock data
+                        fetchstockdata();
+                        fetchstocksleveldata();
+                        fetchreleasedstocks();
+                        fetchactivatedstocks();
+                        fetchrepairedstocks();
+                        fetchdmurstocks();
+                        fetchMaterialCounts();
+                        fetchTotalMaterials();
+                        fetchTotalActiveDescriptions();
+                        fetchTotalDescriptionsExcludingActive();
+                        selectstocksleveldescription();
 
-                        // Hide the additional fields for Activated and Repair
-                        $('#activatedFields').addClass('d-none');
-                        $('#repairFields').addClass('d-none');
-
-                        // Reset the form fields and close the modal
+                        // Reset the form fields
                         $('#stocksform')[0].reset();
 
-
+                        // Show success message
                         Swal.fire({
                             icon: 'success',
                             title: 'Success!',
                             text: 'Stock created successfully.',
                             showConfirmButton: false,
-                            timer: 1500 // Automatically close after 1.5 seconds
+                            timer: 1500, // Automatically close after 1.5 seconds
                         });
                     } else {
+                        // Handle failure response
                         Swal.fire({
                             icon: 'error',
                             title: 'Oops...',
@@ -1345,7 +1468,7 @@
                     }
                 },
                 error: function(xhr, status, error) {
-                    // Handle error response
+                    // Handle AJAX error
                     Swal.fire({
                         icon: 'error',
                         title: 'Oops...',
@@ -1420,69 +1543,114 @@
         }
 
         // Fetch stock data for the edit modal
+        function formatDateForInput(date) {
+            return date ? moment(date, moment.ISO_8601).format('YYYY-MM-DD') : ''; // Format for type="date"
+        }
+
+        // Function to toggle status fields based on the status value
+        function toggleStatusFields(status) {
+            // Your logic to show or hide fields based on the status
+            if (status === 1) {
+                $('#someField').show();
+            } else {
+                $('#someField').hide();
+            }
+        }
+
+        // Function to show/hide additional fields based on status
+        function toggleStatusFields(status, data) {
+            // Show the appropriate additional fields, without clearing any data
+            if (status == 2 || status == 0) { // Activated or Activation
+                $('#editactivatedFields').removeClass('d-none');
+                $('#editrepairFields').addClass('d-none');
+                $('#editreleasedFields').addClass('d-none');
+            } else if (status == 3) { // Repair
+                $('#editrepairFields').removeClass('d-none');
+                $('#editactivatedFields').addClass('d-none');
+                $('#editreleasedFields').addClass('d-none');
+            } else if (status == 1) { // Released
+                $('#editreleasedFields').removeClass('d-none');
+                $('#editactivatedFields').addClass('d-none');
+                $('#editrepairFields').addClass('d-none');
+            } else {
+                $('#editactivatedFields, #editrepairFields, #editreleasedFields').addClass('d-none');
+            }
+
+            // Restore the previously fetched data into the inputs
+            $('#editstocks_date_active').val(formatDateForInput(data.date_active));
+            $('#editstocks_date_released').val(formatDateForInput(data.date_released));
+            $('#editstocks_date_used').val(formatDateForInput(data.date_used));
+            $('#editstocks_date_repaired').val(formatDateForInput(data.date_repaired));
+        }
+
+        // Fetch stock data for the edit modal
         function fetchstoredstocks(id) {
             console.log(id); // Debug: Check if the correct ID is being fetched
 
-            // AJAX request to fetch data for the selected ID
             $.ajax({
                 url: '/stocks/' + id,
                 type: 'GET',
                 success: function(response) {
-                    console.log(response);
+                    console.log(response); // Debug: Inspect the response data
 
                     var data = response.stocks;
 
-                    // Store the fetched data in global variables
-                    window.fetchedData = {
-                        account_no: data.account_no,
-                        serial_no: data.serial_no,
-                        product_name: data.product_name,
-                        description: data.description,
-                        team_tech: data.team_tech,
-                        date_active: data.date_active,
-                        date_released: data.date_released,
-                        j_o_no: data.j_o_no,
-                        date_used: data.date_used,
-                        ticket_no: data.ticket_no,
-                        serial_new_no: data.serial_new_no,
-                        date_repaired: data.date_repaired
-                    };
-
-                    // Set the status of the radio buttons based on the data
-                    if (data.status == 0) {
-                        $('#editstocks_active').prop('checked', true);
-                    } else if (data.status == 1) {
-                        $('#editstocks_released').prop('checked', true);
-                    } else if (data.status == 2) {
-                        $('#editstocks_activated').prop('checked', true);
-                    } else if (data.status == 3) {
-                        $('#editstocks_repair').prop('checked', true);
+                       // Set the status of the radio buttons based on the data
+                    switch (data.status) {
+                        case 0:
+                            $('#editstocks_activation').prop('checked', true);
+                            break;
+                        case 1:
+                            $('#editstocks_released').prop('checked', true);
+                            break;
+                        case 2:
+                            $('#editstocks_activated').prop('checked', true);
+                            break;
+                        case 3:
+                            $('#editstocks_repair').prop('checked', true);
+                            break;
+                        default:
+                            console.warn('Unknown status: ', data.status);
                     }
 
-                    // Format dates specifically for <input type="date"> fields
-                    function formatDateForInput(date) {
-                        return date ? moment(date, moment.ISO_8601).format('YYYY-MM-DD') : ''; // Format for type="date"
+                    // Populate the select field with options
+                    $('#editstocks_description').empty(); // Clear existing options
+                    $('#editstocks_description').append('<option disabled selected>Select Materials</option>');
+
+                    // Add options based on the fetched data
+                    if (data.stock_materials && data.stock_materials.length > 0) {
+                        data.stock_materials.forEach(material => {
+                            $('#editstocks_description').append(
+                                `<option value="${material.description_id}">${material.stocksdesc_level.description}</option>`
+                            );
+                        });
                     }
 
-                    // Set the values for the fields (dates, other fields)
-                    $('#editstocks_account_no').val(window.fetchedData.account_no);
-                    $('#editstocks_serial_no').val(window.fetchedData.serial_no);
-                    $('#editstocks_product_name').val(window.fetchedData.product_name);
-                    $('#editstocks_description').val(window.fetchedData.description);
-                    $('#editstocks_team_tech').val(window.fetchedData.team_tech);
-                    $('#editstocks_date_active').val(formatDateForInput(window.fetchedData.date_active));
-                    $('#editstocks_date_released').val(formatDateForInput(window.fetchedData.date_released)); // Set the date in YYYY-MM-DD
-                    $('#editstocks_jo_no').val(window.fetchedData.j_o_no);
-                    $('#editstocks_date_used').val(formatDateForInput(window.fetchedData.date_used)); // Set the date in YYYY-MM-DD
-                    $('#editticket_no').val(window.fetchedData.ticket_no);
-                    $('#editstocks_serial_new_no').val(window.fetchedData.serial_new_no);
-                    $('#editstocks_date_repaired').val(formatDateForInput(window.fetchedData.date_repaired)); // Set the date in YYYY-MM-DD
+                    // Set the selected values
+                    let descriptionIds = data.stock_materials.map(material => material.description_id);
+                    console.log(descriptionIds, 'data'); // Debug: Check the description IDs
+                    $('#editstocks_description').val(descriptionIds).trigger('change');
+
+                    // Set the values for other fields
+                    $('#editstocks_account_no').val(data.account_no);
+                    $('#editstocks_serial_no').val(data.serial_no);
+                    $('#editstocks_product_name').val(data.product_name);
+                    $('#editstocks_team_tech').val(data.team_tech);
+                    $('#editstocks_subscriber_name').val(data.subsname);
+                    $('#editstocks_subscriber_account_no').val(data.subsaccount_no);
+                    $('#editstocks_date_active').val(formatDateForInput(data.date_active));
+                    $('#editstocks_date_released').val(formatDateForInput(data.date_released));
+                    $('#editstocks_jo_no').val(data.j_o_no);
+                    $('#editstocks_sar_no').val(data.sar_no);
+                    $('#editstocks_date_used').val(formatDateForInput(data.date_used));
+                    $('#editticket_no').val(data.ticket_no);
+                    $('#editstocks_serial_new_no').val(data.serial_new_no);
+                    $('#editstocks_date_repaired').val(formatDateForInput(data.date_repaired));
 
                     $('#editstocksform').data('id', id);
 
                     // Show the correct additional fields based on the fetched data's status
-                    toggleStatusFields(data.status);
-
+                    toggleStatusFields(data.status, data); // Pass 'data' as an argument
                 },
                 error: function(xhr, status, error) {
                     console.error(xhr.responseText);
@@ -1530,32 +1698,6 @@
             });
         }
 
-        // Function to show/hide additional fields based on status
-        function toggleStatusFields(status) {
-            // Show the appropriate additional fields, without clearing any data
-            if (status == 2) { // Activated
-                $('#editactivatedFields').removeClass('d-none');
-                $('#editrepairFields').addClass('d-none');
-                $('#editreleasedFields').addClass('d-none');
-            } else if (status == 3) { // Repair
-                $('#editrepairFields').removeClass('d-none');
-                $('#editactivatedFields').addClass('d-none');
-                $('#editreleasedFields').addClass('d-none');
-            } else if (status == 1) { // Released
-                $('#editreleasedFields').removeClass('d-none');
-                $('#editactivatedFields').addClass('d-none');
-                $('#editrepairFields').addClass('d-none');
-            } else {
-                $('#editactivatedFields, #editrepairFields, #editreleasedFields').addClass('d-none');
-            }
-
-            // Restore the previously fetched data into the inputs
-            $('#editstocks_date_active').val(formatDateForInput(window.fetchedData.date_active));
-            $('#editstocks_date_released').val(formatDateForInput(window.fetchedData.date_released));
-            $('#editstocks_date_used').val(formatDateForInput(window.fetchedData.date_used));
-            $('#editstocks_date_repaired').val(formatDateForInput(window.fetchedData.date_repaired));
-        }
-
         // Handle status change to show/hide additional edit fields
         $('input[name="edit_status"]').change(function () {
             const status = $(this).val();
@@ -1573,8 +1715,10 @@
             var status = $('input[name="edit_status"]:checked').val(); // Fetch selected status
 
             var product_name = $('#editstocks_product_name').val();
-            var description = $('#editstocks_description').val();
+            var description_id = $('#editstocks_description').val();
             var team_tech = $('#editstocks_team_tech').val();
+            var subsname = $('#editstocks_subscriber_name').val();
+            var subsaccount_no = $('#editstocks_subscriber_account_no').val();
             var account_no = $('#editstocks_account_no').val();
             var serial_no = $('#editstocks_serial_no').val();
             var date_active = $('#editstocks_date_active').val();
@@ -1582,6 +1726,7 @@
             var ticket_no = $('#editticket_no').val();
             var serial_new_no = $('#editstocks_serial_new_no').val();
             var j_o_no = $('#editstocks_jo_no').val();
+            var sar_no = $('#editstocks_sar_no').val();
             var date_used = $('#editstocks_date_used').val();
             var date_repaired = $('#editstocks_date_repaired').val();
 
@@ -1616,8 +1761,10 @@
                         },
                         data: {
                             product_name: product_name,
-                            description: description,
+                            description_id: description_id,
                             team_tech: team_tech,
+                            subsname: subsname,
+                            subsaccount_no: subsaccount_no,
                             account_no: account_no,
                             serial_no: serial_no,
                             date_active: date_active,
@@ -1628,16 +1775,25 @@
                             ticket_no: ticket_no,
                             serial_new_no: serial_new_no,
                             j_o_no: j_o_no,
+                            sar_no: sar_no,
                         },
                         success: function(response) {
                             console.log(response);
 
-                            fetchstockdata(); // Refresh stock data
-                            fetchactivestocks(); // Refresh active stocks
-                            fetchreleasedstocks(); // Refresh released stocks
-                            fetchactivatedstocks(); // Refresh activated stocks
-                            fetchrepairedstocks(); // Refresh repaired stocks
-                            fetchMaterialCounts(); // Update material counts
+                            // Refresh stock data
+                            fetchstockdata();
+                            fetchstocksleveldata();
+                            fetchreleasedstocks();
+                            fetchactivatedstocks();
+                            fetchrepairedstocks();
+                            fetchdmurstocks();
+                            fetchMaterialCounts();
+                            fetchTotalMaterials();
+                            fetchTotalActiveDescriptions();
+                            fetchTotalDescriptionsExcludingActive();
+                            selectstocksleveldescription();
+
+
                             Swal.fire({
                                 icon: 'success',
                                 title: 'Updated!',
@@ -1768,8 +1924,19 @@
                                             timer: 1500 // Automatically close after 1.5 seconds
                                         });
                                         // Refresh or update the table data here
-                                        fetchstockdata(); // Assuming you have a fetchData function to reload the table data
-                                        fetchMaterialCounts(); // Fetch material counts
+                                        // Refresh stock data
+                                        fetchstockdata();
+                                        fetchstocksleveldata();
+                                        fetchreleasedstocks();
+                                        fetchactivatedstocks();
+                                        fetchrepairedstocks();
+                                        fetchdmurstocks();
+                                        fetchMaterialCounts();
+                                        fetchTotalMaterials();
+                                        fetchTotalActiveDescriptions();
+                                        fetchTotalDescriptionsExcludingActive();
+                                        selectstocksleveldescription();
+
                                     } else {
                                         Swal.fire({
                                             icon: 'error',
@@ -1937,7 +2104,7 @@
                 type: 'GET',
                 success: function(response) {
                     // Update the UI with the total sum of descriptions
-                    $('#totalDescriptions').text(response.totalCount); // Display the total sum
+                    $('#usedcountmaterials').text(response.totalCount); // Display the total sum
                 },
                 error: function(xhr, status, error) {
                     console.error('Failed to fetch total descriptions:', error);
@@ -1981,11 +2148,11 @@
                 url: '/fetch-released-stocks',
                 type: 'GET',
                 success: function(response) {
-                    console.log(response); // Log the response to confirm it's correct
-                    renderreleasedstocks(response); // Pass the response directly to renderactivestocks
+                    console.log(response, 'Released Stocks Data'); // Log the response for debugging
+                    renderreleasedstocks(response); // Use response.releasedStocks directly
                 },
                 error: function(xhr, status, error) {
-                    console.error(xhr.responseText); // Log any errors
+                    console.error(xhr.responseText); // Log errors for debugging
                 }
             });
         }
@@ -1993,14 +2160,14 @@
         // Function to fetch activated stocks
         function fetchactivatedstocks() {
             $.ajax({
-                url: '/fetch-activated-stocks',
-                type: 'GET',
+                url: '/activated-stocks', // Endpoint to fetch activated stocks
+                type: 'GET', // HTTP GET request
                 success: function(response) {
-                    renderactivatedstocks(response);
-                    console.log(response, 'Fetched Repaired Stocks');
+                    renderactivatedstocks(response); // Call render function with fetched data
+                    console.log(response, 'Fetched Activated Stocks'); // Log the response for debugging
                 },
                 error: function(xhr, status, error) {
-                    console.error(xhr.responseText);
+                    console.error('Error fetching activated stocks:', xhr.responseText); // Log any errors
                 }
             });
         }
@@ -2020,7 +2187,21 @@
             });
         }
 
-        // Function to render the DataTable
+        // Function to fetch dmur stocks
+        function fetchdmurstocks() {
+            $.ajax({
+                url: '/dmur-stocks', // Endpoint to fetch activated stocks
+                type: 'GET', // HTTP GET request
+                success: function(response) {
+                    renderdmurstocks(response); // Call render function with fetched data
+                    console.log(response, 'Fetched Dmur Stocks'); // Log the response for debugging
+                },
+                error: function(xhr, status, error) {
+                    console.error('Error fetching dmur stocks:', xhr.responseText); // Log any errors
+                }
+            });
+        }
+
         function renderstocks(data) {
             console.log(data);
             var table = $('#stockstable').DataTable({
@@ -2035,9 +2216,17 @@
                         orderable: true, // Allow sorting
                     },
                     {
-                        data: 'descriptionname.description',
-                        render: data => data ? data : 'N/A',
-                        orderable: true // Allow sorting
+                        data: 'stock_materials', // Access stock_materials as an array
+                        render: function(data) {
+                            // Check if stock_materials is an array and map over it to create a numbered list
+                            return data && Array.isArray(data)
+                                ? data.map((item, index) => `${index + 1}. ${item.stocksdesc_level.description}`).join('<br>') // Join descriptions with line breaks
+                                : 'N/A'; // If no data, return 'N/A'
+                        },
+                        orderable: true, // Allow sorting
+                        createdCell: function(td) {
+                            $(td).css('text-align', 'left'); // Align content to the left
+                        }
                     },
                     {
                         data: 'account_no',
@@ -2057,7 +2246,7 @@
 
                             if (data == 0) {
                                 statusText = 'Activation';
-                                statusClass = 'badge badge-success text-light';
+                                statusClass = 'badge badge-secondary text-light';
                             } else if (data == 1) {
                                 statusText = 'Released';
                                 statusClass = 'badge badge-primary text-light';
@@ -2152,51 +2341,49 @@
             });
         }
 
-        // Function to render released the DataTable
+        // Function to render released stocks in the DataTable
         function renderreleasedstocks(data) {
-            console.log(data); // Log the data to check it
 
             var table = $('#releasedstockstable').DataTable({
-                destroy: true,
-                data: data, // Directly use the response data as an array
-                order: [[0, 'asc']], // Default sorting by the first column (product_name) in ascending order
+                destroy: true, // Destroy any existing table instance
+                data: data, // Use the array of released stocks
+                order: [[0, 'asc']], // Default sorting by date_released
                 columns: [
                     {
-                        data: 'account_no',
-                        render: data => data ? data : 'N/A',
+                        data: 'date_released',
+                        render: data =>
+                            data
+                                ? new Date(data).toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' })
+                                : 'N/A',
                         orderable: true
                     },
                     {
-                        data: 'product_name',
-                        render: data => data ? data : 'N/A',
-                        orderable: true
+                        data: 'stock_materials', // Access stock_materials as an array
+                        render: function(data) {
+                            // Check if stock_materials is an array and map over it to create a numbered list
+                            return data && Array.isArray(data)
+                                ? data.map((item, index) => `${index + 1}. ${item.stocksdesc_level.description}`).join('<br>') // Join descriptions with line breaks
+                                : 'N/A'; // If no data, return 'N/A'
+                        },
+                        orderable: true, // Allow sorting
+                        createdCell: function(td) {
+                            $(td).css('text-align', 'left'); // Align content to the left
+                        }
                     },
                     {
-                        data: 'description',
-                        render: data => data ? data : 'N/A',
-                        orderable: true
-                    },
-                    {
-                        data: 'serial_no',
-                        render: data => data ? data : 'N/A',
+                        data: 'total_quantity', // Ensure total_quantity is calculated in your backend
+                        render: data => (data ? data : 'N/A'),
                         orderable: true
                     },
                     {
                         data: 'team_tech',
-                        render: data => data ? data : 'N/A',
-                        orderable: true
-                    },
-                    {
-                        data: 'date_released',
-                        render: data => data
-                            ? new Date(data).toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' })
-                            : 'N/A',
+                        render: data => data || 'N/A',
                         orderable: true
                     },
                     {
                         data: 'status',
                         render: function(data) {
-                            var statusText, statusClass;
+                            let statusText, statusClass;
                             switch (data) {
                                 case 0:
                                     statusText = 'Active';
@@ -2219,7 +2406,7 @@
                                     statusClass = 'badge badge-secondary text-light';
                                     break;
                             }
-                            return `<div class="status-bg ${statusClass}">${statusText}</div>`;
+                            return `<span class="${statusClass}">${statusText}</span>`;
                         },
                         className: 'text-nowrap',
                         orderable: true
@@ -2228,36 +2415,36 @@
             });
         }
 
-        // Function to render the activated stocks DataTable
         function renderactivatedstocks(data) {
-            console.log(data); // Inspect the data structure
+            console.log(data); // Inspect the data structure for debugging
 
+            // Initialize DataTable
             var table = $('#activatedstockstable').DataTable({
-                destroy: true, // Destroy existing table and reinitialize
+                destroy: true,
                 data: data,
-                order: [[0, 'asc']], // Default sorting by the first column (Account No.) in ascending order
+                order: [[0, 'asc']], // Default sorting by the first column
                 columns: [
                     {
                         data: 'account_no',
                         render: data => data ? data : 'N/A',
-                        orderable: true // Allow sorting by account_no
+                        orderable: true
                     },
                     {
                         data: 'j_o_no',
                         render: data => data ? data : 'N/A',
-                        orderable: true // Allow sorting by j_o_no
+                        orderable: true
                     },
                     {
                         data: 'serial_no',
                         render: data => data ? data : 'N/A',
-                        orderable: true // Allow sorting by serial_no
+                        orderable: true
                     },
                     {
                         data: 'date_used',
                         render: data => data
                             ? new Date(data).toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' })
                             : 'N/A',
-                        orderable: true // Allow sorting by date_used
+                        orderable: true
                     },
                     {
                         data: 'status',
@@ -2266,8 +2453,8 @@
                             var statusClass;
 
                             if (data == 0) {
-                                statusText = 'Active';
-                                statusClass = 'badge badge-success text-light';
+                                statusText = 'Activation';
+                                statusClass = 'badge badge-secondary text-light';
                             } else if (data == 1) {
                                 statusText = 'Released';
                                 statusClass = 'badge badge-primary text-light';
@@ -2282,10 +2469,10 @@
                                 statusClass = 'badge badge-secondary text-light';
                             }
 
-                            return '<div class="status-bg ' + statusClass + '">' + statusText + '</div>';
+                            return '<div class="' + statusClass + '">' + statusText + '</div>';
                         },
                         className: 'text-nowrap',
-                        orderable: true // Allow sorting by status
+                        orderable: true
                     }
                 ]
             });
@@ -2359,6 +2546,69 @@
             });
         }
 
+        // Function to render the dmur stocks DataTable
+        function renderdmurstocks(data) {
+            console.log(data); // Inspect the data structure for debugging
+
+            // Initialize DataTable
+            var table = $('#dmurstockstable').DataTable({
+                destroy: true,
+                data: data,
+                order: [[0, 'asc']], // Default sorting by the first column
+                columns: [
+                    {
+                        data: 'date_used',
+                        render: data => data
+                            ? new Date(data).toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' })
+                            : 'N/A',
+                        orderable: true
+                    },
+                    {
+                        data: 'sar_no',
+                        render: data => data ? data : 'N/A',
+                        orderable: true
+                    },
+                    {
+                        data: 'ticket_no',
+                        render: data => data ? data : 'N/A',
+                        orderable: true
+                    },
+                    {
+                        data: 'j_o_no',
+                        render: data => data ? data : 'N/A',
+                        orderable: true
+                    },
+                    {
+                        data: 'stock_materials', // Access stock_materials as an array
+                        render: function(data) {
+                            // Check if stock_materials is an array and map over it to create a numbered list
+                            return data && Array.isArray(data)
+                                ? data.map((item, index) => `${index + 1}. ${item.stocksdesc_level.description}`).join('<br>') // Join descriptions with line breaks
+                                : 'N/A'; // If no data, return 'N/A'
+                        },
+                        orderable: true, // Allow sorting
+                        createdCell: function(td) {
+                            $(td).css('text-align', 'left'); // Align content to the left
+                        }
+                    },
+                    {
+                        data: 'subsaccount_no',
+                        render: data => data ? data : 'N/A',
+                        orderable: true
+                    },
+                    {
+                        data: 'subsname',
+                        render: data => data ? data : 'N/A',
+                        orderable: true
+                    },
+                    {
+                        data: 'team_tech',
+                        render: data => data ? data : 'N/A',
+                        orderable: true
+                    },
+                ]
+            });
+        }
 
         // Handle status change to show/hide additional fields
         $('input[name="status"]').change(function () {
@@ -2389,7 +2639,6 @@
                 $('#activatedFields, #repairFields, #releasedFields').addClass('d-none');
             }
         });
-
 
         // Function to get table headers and rows
         function getTableData(tableSelector) {
@@ -2681,6 +2930,64 @@
             XLSX.writeFile(wb, "repair_stocks_data.xlsx");
         });
 
+        // Function to get table headers and rows
+        function getTableData(tableSelector) {
+            var headers = [];
+            var rows = [];
+
+            // Get headers
+            $(tableSelector + ' thead th').each(function () {
+                headers.push($(this).text());
+            });
+
+            // Get rows
+            $(tableSelector + ' tbody tr').each(function () {
+                var row = [];
+                $(this).find('td').each(function () {
+                    row.push($(this).text());
+                });
+                rows.push(row);
+            });
+
+            return { headers, rows };
+        }
+
+        // Preview PDF Button Click (opens PDF in new tab)
+        $('#dmurstocksprintpdf').click(function () {
+            const { jsPDF } = window.jspdf;
+            var doc = new jsPDF();
+            doc.text("Stocks Data", 20, 20);
+
+            var { headers, rows } = getTableData('#dmurstockstable');
+
+            // Generate the PDF table
+            doc.autoTable({
+                head: [headers],
+                body: rows,
+                startY: 30,
+            });
+
+            // Get PDF data as a Blob URL
+            var pdfPreview = doc.output('bloburl');
+
+            // Open PDF in a new tab
+            var pdfWindow = window.open(pdfPreview, '_blank');
+            pdfWindow.focus();
+        });
+
+        // Print Excel Button Click
+        $('#dmurstocksprintexcel').click(function () {
+            var wb = XLSX.utils.book_new();
+            var { headers, rows } = getTableData('#dmurstockstable');
+
+            // Create Excel sheet
+            var ws = XLSX.utils.aoa_to_sheet([headers, ...rows]);
+            XLSX.utils.book_append_sheet(wb, ws, "Stocks");
+
+            // Save Excel file
+            XLSX.writeFile(wb, "dmur_stocks_data.xlsx");
+        });
+
         // Initialize Select2 for filter dropdowns
         $('#month_select, #year_select, #status_select').select2({
             width: '100%',
@@ -2710,16 +3017,23 @@
             dropdownParent: '#repairstocks'  // Adjust the dropdown position if needed
         });
 
-        // Initialize Select2 on the description dropdown
+        // Initialize Select2 for filter dropdowns
+        $('#dmurfilterMonth, #dmurfilterYear').select2({
+            width: '100%',
+            dropdownParent: '#dmurstocks'  // Adjust the dropdown position if needed
+        });
+
+        // Initialize Select2 on the description dropdown for create stocks modal
         $('#stocks_description').select2({
-            dropdownParent: '#createstocks', // Specify the parent for the dropdown
+            dropdownParent: $('#createstocks') // Specify the parent for the dropdown
+        });
+
+        // Initialize Select2 on the description dropdown for edit stocks modal
+        $('#editstocks_description').select2({
+            dropdownParent: $('#editcreatestocks') // Specify the parent for the dropdown
         });
 
         function selectstocksleveldescription() {
-            // Initialize Select2 on the description dropdown
-            $('#stocks_description').select2({
-                dropdownParent: '#createstocks', // Specify the parent for the dropdown
-            });
 
             // AJAX request to fetch the stocks levels
             $.ajax({
@@ -2731,7 +3045,7 @@
                     // Check if the 'stockslevel' data is available in the response
                     if (response && response.stockslevel) {
                         var stockslevel = response.stockslevel; // Assuming the data is in response.stockslevel
-                        var select = $('#stocks_description');
+                        var select = $('#stocks_description, #editstocks_description');
 
                         // Clear previous options
                         select.empty();

@@ -31,6 +31,8 @@ Route::get('/filter-activated-stocks', [StockController::class, 'filtersActivate
 
 Route::get('/filter-repaired-stocks', [StockController::class, 'filtersRepairedStocks'])->name('filter.repaired.stocks');
 
+Route::get('/filter-dmur-stocks', [StockController::class, 'filtersdmurStocks']);
+
 Route::get('/filter-released-stocks-options', [StockController::class, 'getFilterOptions']);
 
 Route::get('/fetch-activated-years', [StockController::class, 'fetchactivatedYears'])->name('fetch.activated.years');
@@ -41,9 +43,11 @@ Route::get('/fetch-years', [StockController::class, 'fetchYears'])->name('fetch.
 
 Route::get('/fetch-released-stocks', [StockController::class, 'fetchReleasedStocks'])->name('fetch.released.stocks');
 
-Route::get('/fetch-activated-stocks', [StockController::class, 'fetchActivatedStocks'])->name('fetch.activated.stocks');
+Route::get('/activated-stocks', [StockController::class, 'fetchActivatedStocks']);
 
 Route::get('/fetch-repaired-stocks', [StockController::class, 'fetchRepairedStocks'])->name('fetch.repaired.stocks');
+
+Route::get('/dmur-stocks', [StockController::class, 'fetchdmurStocks']);
 
 Route::get('/total-stocks-level', [StocksLevelController::class, 'getTotalstockslevel']);
 

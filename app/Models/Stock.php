@@ -9,14 +9,16 @@ class Stock extends Model
 {
     use HasFactory;
 
-    // The name of the table associated with the model
+    // Table associated with the model
     protected $table = 'stocks_tbl';
 
-    // The attributes that are mass assignable
+    // Fillable attributes
     protected $fillable = [
         'product_name',
         'description_id',
         'team_tech',
+        'subsname',
+        'subsaccount_no',
         'account_no',
         'j_o_no',
         'sar_no',
@@ -30,17 +32,15 @@ class Stock extends Model
         'status',
     ];
 
-    // The attributes that should be cast to native types
-    protected $casts = [
-        'date_active' => 'date',
-        'date_released' => 'date',
-        'date_used' => 'date',
-        'date_repaired' => 'date',
-        'status' => 'integer',
-    ];
-
-
-    public function descriptionname(){
+    // Relationship to the StocksLevel table
+    public function stocksLevel()
+    {
         return $this->belongsTo(StocksLevel::class, 'description_id');
+    }
+
+    // Relationship to the StockMaterials table
+    public function stockMaterials()
+    {
+        return $this->hasMany(StockMaterial::class, 'stocks_id');
     }
 }
