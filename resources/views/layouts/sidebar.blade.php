@@ -102,6 +102,11 @@
                 </a>
             </li>
             <li class="nav-item">
+                <a href="{{ route('port_utilization') }}" class="nav-link {{ request()->routeIs('port_utilization') ? 'active' : '' }}" aria-label="View stocks">
+                    <i class="fa-solid fa-map"></i><span>Port Utilization</span>
+                </a>
+            </li>
+            <li class="nav-item">
                 <a href="{{ route('reports') }}" class="nav-link {{ request()->routeIs('reports') ? 'active' : '' }}" aria-label="View reports">
                     <i class="fas fa-chart-line"></i><span>Reports</span>
                 </a>

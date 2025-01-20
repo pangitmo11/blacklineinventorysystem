@@ -3073,6 +3073,6 @@
                 }
             });
         }
-
+    
 </script>
 @endpush

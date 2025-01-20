@@ -3,6 +3,7 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\StockController;
 use App\Http\Controllers\StocksLevelController;
+use App\Http\Controllers\PortUtilizationController;
 use App\Http\Controllers\PageController;  // Import PageController
 
 // Root route
@@ -15,6 +16,8 @@ Route::get('/dashboard', [PageController::class, 'dashboard'])->name('dashboard'
 // For rendering the stocks page
 Route::get('/stock', [PageController::class, 'stocks_page'])->name('stock');
 
+Route::get('/port_utilization', [PageController::class, 'port_utilization'])->name('port_utilization'); // Port utilization page
+
 Route::get('/reports', [PageController::class, 'reports'])->name('reports'); // Reports page
 
 // Prefix '/stocks' is now handled here, no need to repeat '/stocks' in the route definition
@@ -22,6 +25,8 @@ Route::resource('stocks', StockController::class); // Resource route for StockCo
 
 // Prefix '/stockslevel' is now handled here, no need to repeat '/stockslevel' in the route definition
 Route::resource('stockslevel', StocksLevelController::class); // Resource route for StockController
+
+Route::resource('portutilization', PortUtilizationController::class); // Resource route for PortUtilizationController
 
 Route::get('/fetch-stocks', [StockController::class, 'fetchStocks'])->name('fetch.stocks');
 
@@ -55,3 +60,24 @@ Route::get('/total-active-descriptions', [StocksLevelController::class, 'getTota
 
 Route::get('/total-descriptions-excluding-active', [StocksLevelController::class, 'getTotalDescriptionsExcludingActive']);
 
+Route::get('/total-deployed-ports', [PortUtilizationController::class, 'totalDeployedPorts']);
+
+Route::get('/total-active-ports', [PortUtilizationController::class, 'totalActivePorts']);
+
+Route::get('/total-available-ports', [PortUtilizationController::class, 'totalAvailablePorts']);
+
+Route::get('/utilization-percentage', [PortUtilizationController::class, 'getUtilizationPercentage']);
+
+// Route for fetching municipalities
+Route::get('/municipalities', [PortUtilizationController::class, 'getMunicipalities']);
+
+// Route for fetching barangays based on the selected municipality
+Route::get('/barangays', [PortUtilizationController::class, 'getBarangaysByMunicipality']);
+
+// Route for fetching brgy codes based on the selected barangay
+Route::get('/brgycodes', [PortUtilizationController::class, 'getBrgyCodesByBarangay']);;
+
+// Route for fetching port utilization data with filters
+Route::get('/portutilization', [PortUtilizationController::class, 'getPortUtilization']);
+
+Route::get('/import-sheet-data', [PortUtilizationController::class, 'importGoogleSheetData']);

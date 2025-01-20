@@ -16,7 +16,10 @@ class PageController extends Controller
         return view('pages.stock');  // This should return the page view, not JSON
     }
 
-
+    public function port_utilization()
+    {
+        return view('pages.port_utilization');
+    }
 
     public function reports()
     {

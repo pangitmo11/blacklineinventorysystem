@@ -45,6 +45,35 @@ class StockController extends Controller
         return response()->json(['stocks' => $stocks]);
     }
 
+    public function filtersReleasedStocks(Request $request)
+    {
+        $team_tech = $request->input('team_tech');
+        $month = $request->input('month');
+        $year = $request->input('year');
+
+        $releasedStocks = Stock::with(['stockMaterials.stocksdescLevel:id,description'])
+            ->when($team_tech !== 'All', function ($query) use ($team_tech) {
+                $query->where('team_tech', $team_tech);
+            })
+            ->when($month !== 'All', function ($query) use ($month) {
+                $query->whereMonth('date_released', $month);
+            })
+            ->when($year !== 'All', function ($query) use ($year) {
+                $query->whereYear('date_released', $year);
+            })
+            ->whereNotNull('date_released')
+            ->where('status', 1)
+            ->get();
+
+        $releasedStocks = $releasedStocks->map(function ($stock) {
+            $stock->total_quantity = $stock->stockMaterials->count();
+            return $stock;
+        });
+
+        return response()->json(['stocks' => $releasedStocks]);
+    }
+
+
     public function filtersActivatedStocks(Request $request)
     {
         $month = $request->input('month');
