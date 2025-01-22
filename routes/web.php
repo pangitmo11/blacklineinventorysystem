@@ -20,6 +20,8 @@ Route::get('/port_utilization', [PageController::class, 'port_utilization'])->na
 
 Route::get('/reports', [PageController::class, 'reports'])->name('reports'); // Reports page
 
+Route::get('/stocks_inventory_reports', [PageController::class, 'stocks_inventory_reports'])->name('stocks_inventory_reports'); // Stocks inventory reports page
+
 // Prefix '/stocks' is now handled here, no need to repeat '/stocks' in the route definition
 Route::resource('stocks', StockController::class); // Resource route for StockController
 
@@ -81,3 +83,12 @@ Route::get('/brgycodes', [PortUtilizationController::class, 'getBrgyCodesByBaran
 Route::get('/portutilization', [PortUtilizationController::class, 'getPortUtilization']);
 
 Route::get('/import-sheet-data', [PortUtilizationController::class, 'importGoogleSheetData']);
+
+Route::get('/stocks/perday', [StockController::class, 'perDayData']);
+
+Route::get('/stocks/perweek', [StockController::class, 'perWeekData']);
+
+Route::get('/get-stock-data', [StockController::class, 'getStockData']);
+
+// Route for fetching available years based on the date_released field
+Route::get('/get-available-years', [StockController::class, 'getAvailableYears'])->name('get.available.years');

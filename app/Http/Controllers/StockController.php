@@ -7,6 +7,7 @@ use App\Models\StockMaterial;
 use App\Models\StocksLevel;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Carbon\Carbon;
 
 
 class StockController extends Controller
@@ -475,6 +476,60 @@ class StockController extends Controller
                 'message' => 'Failed to delete stock. Please try again later.',
             ], 500);
         }
+    }
+
+    public function getAvailableYears(Request $request)
+    {
+        // Fetch distinct years based on the date_released field
+        $years = Stock::selectRaw('YEAR(date_released) as year')
+                    ->distinct()
+                    ->orderBy('year', 'desc') // Optional: Sort years in descending order
+                    ->pluck('year');
+
+        return response()->json(['years' => $years]);
+    }
+
+    public function getStockData(Request $request)
+    {
+        // Get selected month and year from the request
+        $month = $request->input('month');
+        $year = $request->input('year');
+
+        // Validate the inputs (set default values if not provided)
+        $month = $month ? $month : Carbon::now()->month;
+        $year = $year ? $year : Carbon::now()->year;
+
+        // Get start and end date for the selected month and year
+        $startOfMonth = Carbon::createFromDate($year, $month, 1)->startOfMonth();
+        $endOfMonth = Carbon::createFromDate($year, $month, 1)->endOfMonth();
+
+        // Fetch Per Day Data for the selected month and year (status = 1)
+        $perDayData = Stock::with(['stockMaterials.stocksdescLevel:id,description'])
+            ->whereBetween('date_released', [$startOfMonth, $endOfMonth])
+            ->where('status', 1)
+            ->get();
+
+        // Group perDayData by each day of the month (e.g., 2025-01-01, 2025-01-02, etc.)
+        $groupedPerDayData = $perDayData->groupBy(function ($item) {
+            return Carbon::parse($item->date_released)->format('Y-m-d'); // Group by day (e.g., 2025-01-01)
+        });
+
+        // Fetch Per Week Data for the selected month and year (status = 1)
+        $perWeekData = Stock::with(['stockMaterials.stocksdescLevel:id,description'])
+            ->whereBetween('date_released', [$startOfMonth, $endOfMonth])
+            ->where('status', 1)
+            ->get();
+
+        // Group perWeekData by Week of the Month (Week 1, Week 2, etc.)
+        $groupedPerWeekData = $perWeekData->groupBy(function ($item) {
+            return 'Week ' . Carbon::parse($item->date_released)->weekOfMonth;
+        });
+
+        // Respond with the grouped data
+        return response()->json([
+            'perDayData' => $groupedPerDayData, // Send the grouped per-day data
+            'perWeekData' => $groupedPerWeekData, // Send the grouped per-week data
+        ]);
     }
 
 }

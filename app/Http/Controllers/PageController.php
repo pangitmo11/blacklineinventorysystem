@@ -25,5 +25,10 @@ class PageController extends Controller
     {
         return view('pages.reports');
     }
+
+    public function stocks_inventory_reports()
+    {
+        return view('pages.stocks_inventory_report');
+    }
 }
 

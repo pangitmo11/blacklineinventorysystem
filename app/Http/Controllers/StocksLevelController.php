@@ -29,14 +29,19 @@ class StocksLevelController extends Controller
 
     public function getTotalActiveDescriptions()
     {
-        // Count the number of descriptions with status 4 (active)
-        $totalActiveDescriptions = StocksLevel::where('stocks_level_status', 4)->count();
+        // Retrieve the descriptions where status is 4 (active)
+        $activeDescriptions = StocksLevel::where('stocks_level_status', 4)->get();
 
-        // Return the count as a JSON response
+        // Count the number of active descriptions
+        $totalActiveDescriptions = $activeDescriptions->count();
+
+        // Return both the count and the data as a JSON response
         return response()->json([
-            'totalActiveDescriptions' => $totalActiveDescriptions
+            'totalActiveDescriptions' => $totalActiveDescriptions,
+            'activeDescriptions' => $activeDescriptions
         ]);
     }
+
         // Function to count total descriptions (excluding status 4)
     public function getTotalDescriptionsExcludingActive()
     {
