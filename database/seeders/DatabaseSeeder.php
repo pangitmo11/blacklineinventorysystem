@@ -4,7 +4,6 @@ namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
 use App\Models\User;
-use App\Models\PortUtilization;
 
 class DatabaseSeeder extends Seeder
 {
@@ -21,7 +20,7 @@ class DatabaseSeeder extends Seeder
             'email' => 'test@example.com',
         ]);
 
-        // Call PortUtilizationSeeder to populate the port_utilization table
-        $this->call(PortUtilizationSeeder::class);
+        // Call TeamTechSeeder to populate the team_tech table
+        $this->call(TeamTechSeeder::class);
     }
 }

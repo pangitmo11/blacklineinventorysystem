@@ -9,8 +9,8 @@
 <link rel="stylesheet" type="text/css" href="{{ asset('css/datatables.min.css') }}">
 <link rel="stylesheet" type="text/css" href="{{ asset('css/dataTables.bootstrap4.min.css') }}">
 <!-- Leaflet CSS -->
-<link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
-<link rel="stylesheet" href="https://unpkg.com/leaflet.fullscreen@2.4.0/Control.FullScreen.css">
+<link rel="stylesheet" href="{{ asset('css/leaflet.css') }}" />
+<link rel="stylesheet" href="{{ asset('css/Control.FullScreen.css') }}">
 <style>
     .custom-cluster {
         background-color: #007bff;
@@ -470,11 +470,11 @@
     <!-- moment.js -->
     <script src="{{ asset('js/moment.min.js') }}"></script>
     <!-- Leaflet JS -->
-    <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
+    <script src="{{ asset('js/leaflet.js') }}"></script>
     <!-- Marker Cluster JS (optional, for clustered markers) -->
-    <script src="https://unpkg.com/leaflet.markercluster@1.5.1/dist/leaflet.markercluster.js"></script>
+    <script src="{{ asset('js/leaflet.markercluster.js') }}"></script>
 
-    <script src="https://unpkg.com/leaflet.fullscreen@2.4.0/Control.FullScreen.js"></script>
+    <script src="{{ asset('js/Control.FullScreen.js') }}"></script>
 
     <script>
         $(document).ready(function() {

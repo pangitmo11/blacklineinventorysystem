@@ -3,8 +3,10 @@
 namespace App\Http\Controllers;
 
 use App\Models\StocksLevel;
+use App\Models\Stock;
 use Illuminate\Http\Request;
-
+use Illuminate\Support\Facades\DB;
+use Carbon\Carbon;
 
 class StocksLevelController extends Controller
 {
@@ -62,9 +64,11 @@ class StocksLevelController extends Controller
 
     public function store(Request $request)
     {
+        // Validate the incoming request
         $validatedData = $request->validate([
             'rows' => 'required|array',
             'rows.*.description' => 'required|string|max:255',
+            'rows.*.date_delivery' => 'nullable|date', // Validate date_delivery for each row
         ]);
 
         $insertData = [];
@@ -72,6 +76,7 @@ class StocksLevelController extends Controller
             $insertData[] = [
                 'description' => $row['description'],
                 'stocks_level_status' => 4, // Default to Active
+                'date_delivery' => $row['date_delivery'], // Add the delivery date for each row
                 'created_at' => now(),
                 'updated_at' => now(),
             ];
@@ -86,7 +91,6 @@ class StocksLevelController extends Controller
             'data' => $insertData,
         ]);
     }
-
 
 
     public function show($id)
@@ -106,6 +110,7 @@ class StocksLevelController extends Controller
     {
         $validatedData = $request->validate([
             'description' => 'nullable|string|max:255',
+            'date_delivery' => 'nullable|date', // Validate delivery_date for each row
         ]);
 
         try {
@@ -153,4 +158,65 @@ class StocksLevelController extends Controller
             ], 500);
         }
     }
+
+    public function getAvailableYears(Request $request)
+    {
+        // Fetch distinct years based on the date_released field
+        $years = StocksLevel::selectRaw('YEAR(date_delivery) as year')
+                    ->distinct()
+                    ->orderBy('year', 'desc') // Optional: Sort years in descending order
+                    ->pluck('year');
+
+        return response()->json(['years' => $years]);
+    }
+
+    public function getMaterialsData(Request $request)
+    {
+        // Get selected filters from the request
+        $month = $request->input('month');
+        $year = $request->input('year');
+        $status = $request->input('status'); // Get the status filter
+        $startDate = $request->input('start_date'); // Date range start
+        $endDate = $request->input('end_date'); // Date range end
+
+        // Determine the date range
+        if ($startDate && $endDate) {
+            // If start_date and end_date are provided, use them
+            $startOfMonth = Carbon::parse($startDate)->startOfDay();
+            $endOfMonth = Carbon::parse($endDate)->endOfDay();
+        } else {
+            // Fallback to month and year if no date range is provided
+            $month = $month ? $month : Carbon::now()->month;
+            $year = $year ? $year : Carbon::now()->year;
+            $startOfMonth = Carbon::createFromDate($year, $month, 1)->startOfMonth();
+            $endOfMonth = Carbon::createFromDate($year, $month, 1)->endOfMonth();
+        }
+
+        // Build the base query
+        $query = StocksLevel::whereBetween('date_delivery', [$startOfMonth, $endOfMonth])
+            ->whereNotNull('date_delivery'); // Ensure date_delivery is not null
+
+        // Apply the status filter if provided
+        if (!is_null($status) && $status !== '') {
+            $query->where('stocks_level_status', $status);
+        }
+
+        // Fetch and group data by day
+        $perDayData = $query->get()->groupBy(function ($item) {
+            return Carbon::parse($item->date_delivery)->format('Y-m-d'); // Group by day (e.g., 2025-01-01)
+        });
+
+        // Fetch and group data by week
+        $perWeekData = $query->get()->groupBy(function ($item) {
+            return 'Week ' . Carbon::parse($item->date_delivery)->weekOfMonth; // Group by week
+        });
+
+        // Respond with the grouped data
+        return response()->json([
+            'perDayData' => $perDayData, // Send the grouped per-day data
+            'perWeekData' => $perWeekData, // Send the grouped per-week data
+        ]);
+    }
+
+
 }

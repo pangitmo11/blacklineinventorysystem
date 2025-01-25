@@ -16,6 +16,7 @@ class Stock extends Model
     protected $fillable = [
         'product_name',
         'description_id',
+        'tech_name_id',
         'team_tech',
         'subsname',
         'subsaccount_no',
@@ -36,6 +37,11 @@ class Stock extends Model
     public function stocksLevel()
     {
         return $this->belongsTo(StocksLevel::class, 'description_id');
+    }
+
+    public function techName()
+    {
+        return $this->belongsTo(TeamTech::class, 'tech_name_id');
     }
 
     // Relationship to the StockMaterials table

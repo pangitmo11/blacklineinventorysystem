@@ -17,7 +17,7 @@ class CreateStocksTbl extends Migration
             $table->id();
             $table->string('product_name')->nullable();
             $table->unsignedBigInteger('description_id')->nullable();
-            $table->string('team_tech')->nullable();
+            $table->unsignedBigInteger('tech_name_id')->nullable();
             $table->string('subsname')->nullable();
             $table->string('subsaccount_no')->nullable();
             $table->string('account_no')->nullable();
@@ -26,17 +26,17 @@ class CreateStocksTbl extends Migration
             $table->string('serial_no')->nullable();
             $table->string('serial_new_no')->nullable();
             $table->string('ticket_no')->nullable();
-            $table->date('date_active')->nullable();
+            $table->date('date_active')->nullable(); // Verify if you need this column
             $table->date('date_released')->nullable();
             $table->date('date_used')->nullable();
             $table->date('date_repaired')->nullable();
-            $table->tinyInteger('status')->nullable()->default(null);
+            $table->tinyInteger('status')->default(5);
             $table->timestamps();
 
             // Foreign Key Constraints
             $table->foreign('description_id')->references('id')->on('stocks_level')->onDelete('set null');
+            $table->foreign('tech_name_id')->references('id')->on('team_tech')->onDelete('set null');
         });
-
     }
 
     /**

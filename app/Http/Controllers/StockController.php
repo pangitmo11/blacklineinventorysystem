@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use App\Models\Stock;
 use App\Models\StockMaterial;
 use App\Models\StocksLevel;
+use App\Models\TeamTech;
+use App\Services\GoogleSheetsService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Carbon\Carbon;
@@ -15,7 +17,9 @@ class StockController extends Controller
     public function index()
     {
         // Eager load the stockMaterials and the related stocksdescLevel (description from stocks_level)
-        $stocks = Stock::with(['stockMaterials.stocksdescLevel:id,description'])->get();
+        $stocks = Stock::with([
+            'stockMaterials.stocksdescLevel:id,description',
+            'techName:id,tech_name'])->get();
 
         // Return response as JSON with 'stocks' key
         return response()->json(['stocks' => $stocks]);
@@ -46,33 +50,52 @@ class StockController extends Controller
         return response()->json(['stocks' => $stocks]);
     }
 
-    public function filtersReleasedStocks(Request $request)
-    {
-        $team_tech = $request->input('team_tech');
-        $month = $request->input('month');
-        $year = $request->input('year');
+public function filtersReleasedStocks(Request $request)
+{
+    // Get filter inputs
+    $tech_name_id = $request->input('tech_name_id');
+    $month = $request->input('month');
+    $year = $request->input('year');
 
-        $releasedStocks = Stock::with(['stockMaterials.stocksdescLevel:id,description'])
-            ->when($team_tech !== 'All', function ($query) use ($team_tech) {
-                $query->where('team_tech', $team_tech);
-            })
-            ->when($month !== 'All', function ($query) use ($month) {
-                $query->whereMonth('date_released', $month);
-            })
-            ->when($year !== 'All', function ($query) use ($year) {
-                $query->whereYear('date_released', $year);
-            })
-            ->whereNotNull('date_released')
-            ->where('status', 1)
-            ->get();
+    // Fetch released stocks with filters applied
+    $releasedStocks = Stock::with(['stockMaterials.stocksdescLevel:id,description', 'techName:id,tech_name'])
+        ->when($tech_name_id !== 'All', function ($query) use ($tech_name_id) {
+            $query->where('tech_name_id', $tech_name_id);
+        })
+        ->when($month !== 'All', function ($query) use ($month) {
+            $query->whereMonth('date_released', $month);
+        })
+        ->when($year !== 'All', function ($query) use ($year) {
+            $query->whereYear('date_released', $year);
+        })
+        ->whereNotNull('date_released')
+        ->where('status', 1)
+        ->get();
 
-        $releasedStocks = $releasedStocks->map(function ($stock) {
-            $stock->total_quantity = $stock->stockMaterials->count();
-            return $stock;
-        });
+    // Calculate total quantity for each stock
+    $releasedStocks = $releasedStocks->map(function ($stock) {
+        $stock->total_quantity = $stock->stockMaterials->count();
+        return $stock;
+    });
 
-        return response()->json(['stocks' => $releasedStocks]);
-    }
+    // Fetch all team techs with their names
+    $teamTechs = TeamTech::select('id as tech_name_id', 'tech_name')->get();
+
+    // Fetch available years from stocks
+    $years = Stock::selectRaw('YEAR(date_released) as year')
+        ->whereNotNull('date_released')
+        ->groupBy('year')
+        ->orderBy('year', 'desc')
+        ->get();
+
+    // Return response
+    return response()->json([
+        'stocks' => $releasedStocks,
+        'team_techs' => $teamTechs,
+        'years' => $years,
+    ]);
+}
+
 
 
     public function filtersActivatedStocks(Request $request)
@@ -143,7 +166,8 @@ class StockController extends Controller
         $year = $request->input('year');
 
         // Initialize query
-        $query = Stock::with(['stockMaterials.stocksdescLevel:id,description']);
+        $query = Stock::with(['stockMaterials.stocksdescLevel:id,description',
+            'techName:id,tech_name']);
 
         // Apply month filter if provided and not 'All'
         if ($month && $month !== 'All') {
@@ -202,8 +226,9 @@ class StockController extends Controller
     public function getFilterOptions()
     {
         // Fetch distinct team_tech values for the filter with status = 1
-        $teamTechs = Stock::select('team_tech')
-            ->where('status', 1)
+        $teamTechs = Stock::select('tech_name_id', 'team_tech.tech_name')
+            ->join('team_tech', 'stocks_tbl.tech_name_id', '=', 'team_tech.id')
+            ->where('stocks_tbl.status', 1)
             ->distinct()
             ->get();
 
@@ -220,11 +245,13 @@ class StockController extends Controller
         ]);
     }
 
+
     public function fetchReleasedStocks()
     {
-        $releasedStocks = Stock::with(['stockMaterials.stocksdescLevel:id,description'])
+        $releasedStocks = Stock::with(['stockMaterials.stocksdescLevel:id,description',
+            'techName:id,tech_name'])
             ->whereNotNull('date_released') // Ensure 'date_released' is not null
-            ->whereNotNull('team_tech')
+            ->whereNotNull('tech_name_id')
             ->where('status', 1) // Released status
             ->where('status', '!=', 0)
             ->where('status', '!=', 2)
@@ -247,7 +274,7 @@ class StockController extends Controller
     public function fetchActivatedStocks()
     {
         // Fetch all records where 'j_o_no' and 'date_used' are not null
-        $activatedstocks = Stock::with(['stockMaterials.stocksdescLevel:id,description'])
+        $activatedstocks = Stock::with(['stockMaterials.stocksdescLevel:id,description','techName:id,tech_name'])
             ->whereNotNull('date_used')
             ->whereNotNull('j_o_no')
             ->whereIn('status', [0, 2]) // Include Activation (0) and Activated (2) statuses
@@ -274,10 +301,10 @@ class StockController extends Controller
     public function fetchdmurStocks()
     {
         // Fetch all records where 'j_o_no' and 'date_used' are not null
-        $dmurstocks = Stock::with(['stockMaterials.stocksdescLevel:id,description'])
+        $dmurstocks = Stock::with(['stockMaterials.stocksdescLevel:id,description','techName:id,tech_name'])
                         ->whereNotNull('sar_no')
                         ->whereNotNull('subsaccount_no')
-                        ->whereNotNull('subsname')
+                        ->whereNotNull('description_id')
                         ->get();
 
         // Return the data as JSON for the frontend to render
@@ -291,7 +318,7 @@ class StockController extends Controller
             'product_name' => 'nullable|string|max:255',
             'description_id' => 'nullable|array', // Expect an array of description_ids
             'description_id.*' => 'integer|exists:stocks_level,id', // Ensure each description_id exists in stocks_level
-            'team_tech' => 'nullable|string|max:255',
+            'tech_name_id' => 'nullable|exists:team_tech,id',
             'subsname' => 'nullable|string|max:255',
             'subsaccount_no' => 'nullable|string|max:255',
             'account_no' => 'nullable|string|max:255',
@@ -310,7 +337,7 @@ class StockController extends Controller
         // Extract only the required fields from the request
         $stocksData = $request->only([
             'product_name',
-            'team_tech',
+            'tech_name_id',
             'subsname',
             'subsaccount_no',
             'account_no',
@@ -323,8 +350,10 @@ class StockController extends Controller
             'date_released',
             'date_used',
             'date_repaired',
-            'status',
         ]);
+
+        // Set default status to 5 if not provided in the request
+        $stocksData['status'] = $request->input('status', 5);
 
         // Create a new stock record
         $stocks = Stock::create($stocksData);
@@ -347,17 +376,18 @@ class StockController extends Controller
         if ($request->has('description_id') && !empty($request->description_id)) {
             DB::table('stocks_level')
                 ->whereIn('id', $request->input('description_id'))
-                ->update(['stocks_level_status' => $request->status]);
+                ->update(['stocks_level_status' => $stocksData['status']]);
         }
 
         // Return a success response
         return response()->json(['status' => 'success', 'message' => 'Stock created successfully.']);
-
     }
+
 
     public function show($id, Request $request)
     {
-        $stocks = Stock::with(['stockMaterials.stocksdescLevel:id,description']) // Load description_id with the material description
+        $stocks = Stock::with(['stockMaterials.stocksdescLevel:id,description',
+        'techName:id,tech_name']) // Load description_id with the material description
             ->where('id', $id)
             ->first();
 
@@ -372,7 +402,7 @@ class StockController extends Controller
             'product_name' => 'nullable|string|max:255',
             'description_id' => 'nullable|array', // Expect an array of description_ids
             'description_id.*' => 'integer|exists:stocks_level,id', // Ensure each description_id exists in stocks_level
-            'team_tech' => 'nullable|string|max:255',
+            'tech_name_id' => 'nullable|exists:team_tech,id',
             'subsname' => 'nullable|string|max:255',
             'subsaccount_no' => 'nullable|string|max:255',
             'account_no' => 'nullable|string|max:255',
@@ -394,7 +424,7 @@ class StockController extends Controller
         // Update the stock record with the incoming data
         $stocks->update($request->only([
             'product_name',
-            'team_tech',
+            'tech_name_id',
             'subsname',
             'subsaccount_no',
             'account_no',
@@ -478,6 +508,57 @@ class StockController extends Controller
         }
     }
 
+    public function destroyMultiple(Request $request)
+    {
+        try {
+            // Validate the request to ensure 'ids' is provided as an array
+            $ids = $request->input('ids');
+            if (!$ids || !is_array($ids)) {
+                return response()->json([
+                    'status' => 'error',
+                    'message' => 'Invalid request. IDs must be an array.',
+                ], 400);
+            }
+
+            // Find the stocks and related description IDs
+            $stocks = Stock::whereIn('id', $ids)->get();
+            if ($stocks->isEmpty()) {
+                return response()->json([
+                    'status' => 'error',
+                    'message' => 'No matching stocks found.',
+                ], 404);
+            }
+
+            $descriptionIds = [];
+            foreach ($stocks as $stock) {
+                $descriptionIds = array_merge(
+                    $descriptionIds,
+                    $stock->stockMaterials()->pluck('description_id')->toArray()
+                );
+            }
+
+            // Delete the stocks
+            Stock::whereIn('id', $ids)->delete();
+
+            // Update related descriptions in the stocks_level table
+            if (!empty($descriptionIds)) {
+                DB::table('stocks_level')
+                    ->whereIn('id', $descriptionIds)
+                    ->update(['stocks_level_status' => 4]);
+            }
+
+            return response()->json([
+                'status' => 'success',
+                'message' => 'Selected stocks deleted successfully.',
+            ], 200);
+        } catch (\Exception $e) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Failed to delete stocks. Please try again later.',
+            ], 500);
+        }
+    }
+
     public function getAvailableYears(Request $request)
     {
         // Fetch distinct years based on the date_released field
@@ -491,33 +572,43 @@ class StockController extends Controller
 
     public function getStockData(Request $request)
     {
-        // Get selected month and year from the request
+        // Get selected month and year from the request (fallback to current month/year)
         $month = $request->input('month');
         $year = $request->input('year');
+
+        // Get selected start and end dates from the request (optional)
+        $startDate = $request->input('start_date');
+        $endDate = $request->input('end_date');
 
         // Validate the inputs (set default values if not provided)
         $month = $month ? $month : Carbon::now()->month;
         $year = $year ? $year : Carbon::now()->year;
 
-        // Get start and end date for the selected month and year
-        $startOfMonth = Carbon::createFromDate($year, $month, 1)->startOfMonth();
-        $endOfMonth = Carbon::createFromDate($year, $month, 1)->endOfMonth();
+        // If start_date and end_date are provided, override the month/year filters
+        if ($startDate && $endDate) {
+            $startDate = Carbon::parse($startDate)->startOfDay(); // Start of the selected day
+            $endDate = Carbon::parse($endDate)->endOfDay(); // End of the selected day
+        } else {
+            // If no date range is provided, use the month/year to generate the start and end dates
+            $startDate = Carbon::createFromDate($year, $month, 1)->startOfMonth(); // Start of the selected month
+            $endDate = Carbon::createFromDate($year, $month, 1)->endOfMonth(); // End of the selected month
+        }
 
-        // Fetch Per Day Data for the selected month and year (status = 1)
-        $perDayData = Stock::with(['stockMaterials.stocksdescLevel:id,description'])
-            ->whereBetween('date_released', [$startOfMonth, $endOfMonth])
-            ->where('status', 1)
+        // Fetch Per Day Data for the selected date range (status = 1, date_released is not null)
+        $perDayData = Stock::with(['stockMaterials.stocksdescLevel:id,description', 'techName:id,tech_name'])
+            ->whereBetween('date_released', [$startDate, $endDate])
+            ->whereNotNull('date_released') // Ensure date_released is not null
             ->get();
 
-        // Group perDayData by each day of the month (e.g., 2025-01-01, 2025-01-02, etc.)
+        // Group perDayData by each day within the selected date range
         $groupedPerDayData = $perDayData->groupBy(function ($item) {
             return Carbon::parse($item->date_released)->format('Y-m-d'); // Group by day (e.g., 2025-01-01)
         });
 
-        // Fetch Per Week Data for the selected month and year (status = 1)
-        $perWeekData = Stock::with(['stockMaterials.stocksdescLevel:id,description'])
-            ->whereBetween('date_released', [$startOfMonth, $endOfMonth])
-            ->where('status', 1)
+        // Fetch Per Week Data for the selected date range (status = 1, date_released is not null)
+        $perWeekData = Stock::with(['stockMaterials.stocksdescLevel:id,description', 'techName:id,tech_name'])
+            ->whereBetween('date_released', [$startDate, $endDate])
+            ->whereNotNull('date_released') // Ensure date_released is not null
             ->get();
 
         // Group perWeekData by Week of the Month (Week 1, Week 2, etc.)
@@ -531,5 +622,79 @@ class StockController extends Controller
             'perWeekData' => $groupedPerWeekData, // Send the grouped per-week data
         ]);
     }
+
+
+
+    public function importGoogleSheetData()
+    {
+        $spreadsheetId = '1dZNSZjbuxH6fxokXu1AWH05t4bcwsCTEUGEQmtp4KpI'; // Your spreadsheet ID
+        $range = 'STOCKS!A2:B1000'; // Fetch data from columns A (Product Name) and B (Serial No)
+
+        // Assuming GoogleSheetsService is set up to fetch sheet data
+        $googleSheetsService = new GoogleSheetsService();
+        $data = $googleSheetsService->getSheetData($spreadsheetId, $range);
+
+        // Debug the fetched data (optional)
+        // dd($data);
+
+        // Check if data is fetched successfully
+        if (empty($data)) {
+            return response()->json(['message' => 'No data found in the specified range.'], 400);
+        }
+
+        // Loop through the rows and save them to the database
+        foreach ($data as $row) {
+            // Ensure the row has the necessary columns (Product Name and Serial No)
+            if (isset($row[0], $row[1])) {
+                Stock::create([
+                    'product_name' => $row[0], // Column A -> Product Name
+                    'serial_no'    => $row[1], // Column B -> Serial No
+                ]);
+            }
+        }
+
+        return response()->json(['message' => 'Data successfully imported']);
+    }
+
+    public function teamTechDetails()
+    {
+        // Fetch all tech names and their assigned stocks, including those with null serial_no and description
+        $techData = TeamTech::with([
+            'stocks' => function ($query) {
+                $query->select('id', 'tech_name_id', 'serial_no')
+                    ->with(['stockMaterials.stocksdescLevel:id,description']); // Include stock descriptions
+            }
+        ])->select('id', 'tech_name')->get();
+
+        // Transform the data to include unassigned stocks as well
+        $teamTechDetails = $techData->map(function ($tech) {
+            return [
+                'tech_name_id' => $tech->id,
+                'tech_name' => $tech->tech_name,
+                'stocks' => $tech->stocks->map(function ($stock) {
+                    // Extract multiple descriptions if there are more than one
+                    $descriptions = $stock->stockMaterials->map(function ($material) {
+                        return [
+                            'description_id' => optional($material->stocksdescLevel)->id,
+                            'description' => optional($material->stocksdescLevel)->description,
+                        ];
+                    });
+
+                    return [
+                        'serial_no' => $stock->serial_no,
+                        'descriptions' => $descriptions,  // Multiple descriptions as an array
+                    ];
+                }),
+            ];
+        });
+
+        // Return the transformed data as a JSON response
+        return response()->json([
+            'teamTechDetails' => $teamTechDetails
+        ]);
+    }
+
+
+
 
 }

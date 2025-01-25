@@ -15,6 +15,7 @@ class StocksLevel extends Model
     // Fillable attributes
     protected $fillable = [
         'description',
+        'date_delivery',
         'stocks_level_status',
     ];
 

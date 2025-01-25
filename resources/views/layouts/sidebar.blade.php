@@ -52,7 +52,7 @@
             }
 
             .sidebar .nav-link:hover {
-                color:  white;
+                color: white;
                 background-color: #495057;
             }
 
@@ -109,13 +109,7 @@
                         <i class="fas fa-box"></i><span>Stocks</span>
                     </a>
                 </li>
-                <li class="nav-item">
-                    <a href="{{ route('port_utilization') }}"
-                        class="nav-link {{ request()->routeIs('port_utilization') ? 'active' : '' }}"
-                        aria-label="View port utilization">
-                        <i class="fa-solid fa-map"></i><span>Port Utilization</span>
-                    </a>
-                </li>
+
                 <!-- Reports Dropdown -->
                 <li class="nav-item">
                     <a href="#reportsSubmenu" class="nav-link d-flex justify-content-between align-items-center"
@@ -125,10 +119,17 @@
                     </a>
                     <ul class="collapse list-unstyled ps-3" id="reportsSubmenu">
                         <li>
-                            <a href="{{ route('reports') }}"
-                                class="nav-link {{ request()->routeIs('reports') ? 'active' : '' }}"
-                                aria-label="View general reports">
-                                <i class="fas fa-file-alt"></i><span>General Reports</span>
+                            <a href="{{ route('materials_inventory_reports') }}"
+                                class="nav-link {{ request()->routeIs('materials_inventory_reports') ? 'active' : '' }}"
+                                aria-label="View materials inventory reports">
+                                <i class="fas fa-file-alt"></i><span>Materials Inventory Reports</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="{{ route('teamtech_inventory_reports') }}"
+                                class="nav-link {{ request()->routeIs('teamtech_inventory_reports') ? 'active' : '' }}"
+                                aria-label="View teamtech inventory report">
+                                <i class="fas fa-file-invoice"></i><span>Teamtech Inventory Report</span>
                             </a>
                         </li>
                         <li>

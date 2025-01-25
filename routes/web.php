@@ -4,11 +4,12 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\StockController;
 use App\Http\Controllers\StocksLevelController;
 use App\Http\Controllers\PortUtilizationController;
+use App\Http\Controllers\TeamTechController;
 use App\Http\Controllers\PageController;  // Import PageController
 
 // Root route
 Route::get('/', function () {
-    return redirect()->route('dashboard');
+    return redirect()->route('stock');
 });
 
 // View routes handled by PageController
@@ -18,7 +19,9 @@ Route::get('/stock', [PageController::class, 'stocks_page'])->name('stock');
 
 Route::get('/port_utilization', [PageController::class, 'port_utilization'])->name('port_utilization'); // Port utilization page
 
-Route::get('/reports', [PageController::class, 'reports'])->name('reports'); // Reports page
+Route::get('/materials_inventory_reports', [PageController::class, 'materials_inventory_reports'])->name('materials_inventory_reports'); // Reports page
+
+Route::get('/teamtech_inventory_reports', [PageController::class, 'teamtech_inventory_reports'])->name('teamtech_inventory_reports'); // Reports page
 
 Route::get('/stocks_inventory_reports', [PageController::class, 'stocks_inventory_reports'])->name('stocks_inventory_reports'); // Stocks inventory reports page
 
@@ -27,6 +30,8 @@ Route::resource('stocks', StockController::class); // Resource route for StockCo
 
 // Prefix '/stockslevel' is now handled here, no need to repeat '/stockslevel' in the route definition
 Route::resource('stockslevel', StocksLevelController::class); // Resource route for StockController
+
+Route::resource('teamtech', TeamTechController::class); // Resource route for TeamTechController
 
 Route::resource('portutilization', PortUtilizationController::class); // Resource route for PortUtilizationController
 
@@ -84,11 +89,20 @@ Route::get('/portutilization', [PortUtilizationController::class, 'getPortUtiliz
 
 Route::get('/import-sheet-data', [PortUtilizationController::class, 'importGoogleSheetData']);
 
-Route::get('/stocks/perday', [StockController::class, 'perDayData']);
-
-Route::get('/stocks/perweek', [StockController::class, 'perWeekData']);
+Route::get('/import-stocks-sheet-data', [StockController::class, 'importGoogleSheetData']);
 
 Route::get('/get-stock-data', [StockController::class, 'getStockData']);
 
+Route::get('/get-materials-data', [StocksLevelController::class, 'getMaterialsData']);
+
 // Route for fetching available years based on the date_released field
 Route::get('/get-available-years', [StockController::class, 'getAvailableYears'])->name('get.available.years');
+
+Route::get('/tech-count', [TeamTechController::class, 'techcount']);
+
+Route::get('/tech-assigned-count', [TeamTechController::class, 'countTeamTechAssigned']);
+
+Route::post('/stocks/delete-multiple', [StockController::class, 'destroyMultiple'])->name('stocks.destroyMultiple');
+
+Route::get('/team-tech-details', [StockController::class, 'teamTechDetails']);
+

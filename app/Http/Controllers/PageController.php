@@ -21,9 +21,14 @@ class PageController extends Controller
         return view('pages.port_utilization');
     }
 
-    public function reports()
+    public function materials_inventory_reports()
     {
-        return view('pages.reports');
+        return view('pages.materials_inventory_report');
+    }
+
+    public function teamtech_inventory_reports()
+    {
+        return view('pages.teamtech_inventory_report');
     }
 
     public function stocks_inventory_reports()

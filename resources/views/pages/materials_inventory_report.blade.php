@@ -9,7 +9,7 @@
 <link rel="stylesheet" type="text/css" href="{{ asset('css/datatables.min.css') }}">
 <link rel="stylesheet" type="text/css" href="{{ asset('css/dataTables.bootstrap4.min.css') }}">
 
-<link href="{{ asset('css/daterangepicker.css') }}" rel="stylesheet" />
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css">
 
 <style>
     /* Add hover effect to the card */
@@ -40,6 +40,11 @@
     table tbody tr:hover {
         background-color: #f1f1f1;
     }
+
+    #searchBar {
+        max-width: 300px;
+        /* Limit width */
+    }
 </style>
 
 @section('content')
@@ -52,10 +57,10 @@
 
             <!-- Total Bucket Card -->
             <div class="col-lg-3 col-md-6 mb-3">
-                <div class="card bg-primary text-center text-white shadow">
+                <div class="card bg-info text-center text-white shadow">
                     <div class="card-body">
-                        <h5 class="card-title" style="font-size: 1rem;">Total Stocks</h5>
-                        <p class="card-text" id="bucket_count" style="font-size: 1.5rem;">0</p>
+                        <h5 class="card-title" style="font-size: 1rem;">Total Materials</h5>
+                        <p class="card-text" id="total_materials_count" style="font-size: 1.5rem;">0</p>
                     </div>
                 </div>
             </div>
@@ -64,72 +69,22 @@
             <div class="col-lg-3 col-md-6 mb-3">
                 <div class="card bg-primary text-center text-white shadow">
                     <div class="card-body">
-                        <h5 class="card-title" style="font-size: 1rem;">Total Week</h5>
-                        <p class="card-text" id="bucket_perweek_count" style="font-size: 1.5rem;">0</p>
+                        <h5 class="card-title" style="font-size: 1rem;">Total Used Materials</h5>
+                        <p class="card-text" id="total_used_materials_count" style="font-size: 1.5rem;">0</p>
                     </div>
                 </div>
             </div>
 
             <!-- Card with Hover and Clickable Modal Trigger -->
             <div class="col-lg-3 col-md-6 mb-3">
-                <div class="card bg-warning text-center text-success shadow clickable-card" data-toggle="modal"
-                    data-target="#remainingmodal">
+                <div class="card bg-success text-center text-white shadow">
                     <div class="card-body">
-                        <h5 class="card-title" style="font-size: 1rem;">Total Remaining</h5>
-                        <p class="card-text" id="remaining_buckets" style="font-size: 1.5rem;">0%</p>
+                        <h5 class="card-title" style="font-size: 1rem;">Total Available Materials</h5>
+                        <p class="card-text" id="total_available_materials_count" style="font-size: 1.5rem;">0</p>
                     </div>
                 </div>
             </div>
 
-        </div>
-
-        <!-- Remaining Stocks Modal -->
-        <div class="modal fade" id="remainingmodal" tabindex="-1" role="dialog" aria-labelledby="remainingmodalLabel"
-            aria-hidden="true" data-backdrop="static" data-keyboard="false">
-            <div class="modal-dialog modal-dialog-centered modal-xl">
-                <div class="modal-content">
-                    <!-- Modal Header -->
-                    <div class="modal-header bg-warning text-white">
-                        <h5 class="modal-title text-black" id="remainingmodalLabel">Remaining Stocks</h5>
-                        <button type="button" class="btn-close" data-dismiss="modal" aria-label="Close"></button>
-                    </div>
-
-                    <div class="row justify-content-center">
-                        <!-- Total remaining Stocks Card -->
-                        <div class="col-lg-3 col-md-6 mt-3">
-                            <div class="card bg-success text-center text-white shadow">
-                                <div class="card-body">
-                                    <h5 class="card-title" style="font-size: 1rem;">Total Remaining Stocks</h5>
-                                    <p class="card-text" id="remaining_buckets_count" style="font-size: 1.5rem;">0</p>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Modal Body -->
-                    <div class="modal-body">
-
-                        <button class="btn btn-warning mb-3" style="margin-right: 5px;" id="repairstocksprintpdf">
-                            <i class="fas fa-file-pdf"></i> Print PDF
-                        </button>
-                        <button class="btn btn-info mb-3" id="repairstocksprintexcel">
-                            <i class="fas fa-file-excel"></i> Print Excel
-                        </button>
-                        <table id="remainingstockstable"
-                            class="table table-sm display table-bordered table-responsive-md table-vcenter js-dataTable-buttons text-center dataTable no-footer w-100">
-                            <thead class="table-dark">
-                                <tr>
-                                    <th>Serial No.</th>
-                                    <th>Status</th>
-                                </tr>
-                            </thead>
-                            <tbody id="remainingstockstableBody">
-                                <!-- Table rows will be dynamically populated -->
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-            </div>
         </div>
 
         {{-- filters --}}
@@ -161,6 +116,19 @@
                         <!-- Year options will be dynamically populated -->
                     </select>
                 </div>
+
+                <div class="col-md-4 mb-3">
+                    <label for="filterstatus" class="form-label">Status</label>
+                    <select id="filterstatus" class="form-select filterstatus">
+                        <option value="">All</option> <!-- Default: No filter -->
+                        <option value="0">Activation</option>
+                        <option value="1">Released</option>
+                        <option value="2">Activated</option>
+                        <option value="3">Repair</option>
+                        <option value="4">Available</option>
+                    </select>
+                </div>
+
             </div>
         </div>
 
@@ -191,8 +159,8 @@
         <!-- Tabs for Per Day / Per Week -->
         <ul class="nav nav-tabs shadow-sm" id="reportTabs" role="tablist">
             <li class="nav-item" role="presentation">
-                <button class="nav-link text-white bg-primary" id="perDay-tab" data-bs-toggle="tab"
-                    data-bs-target="#perDay" type="button" role="tab">
+                <button class="nav-link text-white bg-primary" id="perDay-tab" data-bs-toggle="tab" data-bs-target="#perDay"
+                    type="button" role="tab">
                     Per Day
                 </button>
             </li>
@@ -216,9 +184,8 @@
                     <table id="stocks_perday" class="table table-sm table-bordered text-center w-100">
                         <thead class="table-dark">
                             <tr>
-                                <th>Date Released</th>
-                                <th>Description</th>
-                                <th>Serial No.</th>
+                                <th>Date Delivery</th>
+                                <th>Materials</th>
                                 <th>Status</th> <!-- Added Status Column -->
                             </tr>
                         </thead>
@@ -235,9 +202,8 @@
                     <table id="stocks_perweek" class="table table-sm table-bordered text-center w-100">
                         <thead class="table-dark">
                             <tr>
-                                <th>Date Release</th> <!-- Display Week Start and End -->
-                                <th>Description</th>
-                                <th>Serial No.</th>
+                                <th>Date Delivery</th>
+                                <th>Materials</th>
                                 <th>Status</th> <!-- Added Status Column -->
                             </tr>
                         </thead>
@@ -281,7 +247,7 @@
     <!-- moment.js -->
     <script src="{{ asset('js/moment.min.js') }}"></script>
 
-    <script src="{{ asset('js/daterangepicker.min.js') }}"></script>
+    <script src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js"></script>
 
     <script>
         $(document).ready(function() {
@@ -307,16 +273,13 @@
                 $(target).addClass('show active'); // Show the clicked tab pane
             });
 
-            filterStockData();
-
-            fetchremainingstocks();
-
-            fetchTotalActiveDescriptions();
+            filterMaterialsData();
 
             // Set default month and year to current
             let currentMonth = moment().month() + 1; // Get the current month (1-12)
             let currentYear = moment().year(); // Get the current year
             let startDate, endDate;
+
 
             // Set the default values for the filters
             $('#filtermonth').val(currentMonth); // Set default month
@@ -335,15 +298,15 @@
                 }
             });
 
-
-            // Filter data based on the selected month and year
-            $('#filtermonth, #filteryear').change(function() {
+            // Filter data based on the selected month, year, and status
+            $('#filtermonth, #filteryear, #filterstatus').change(function() {
                 let selectedMonth = $('#filtermonth').val();
                 let selectedYear = $('#filteryear').val();
-                filterStockData(selectedMonth, selectedYear);
+                let selectedStatus = $('#filterstatus').val(); // Get the selected status
+                filterMaterialsData(selectedMonth, selectedYear, selectedStatus);
             });
 
-            filterStockData(currentMonth, currentYear);
+            filterMaterialsData(currentMonth, currentYear);
 
             // Initialize the date range picker
             $('#daterangePicker').daterangepicker({
@@ -365,7 +328,7 @@
                 $(this).val(`${startDate} - ${endDate}`);
 
                 // Call the AJAX function to filter table data
-                filterStockDataByDateRange(
+                filterMaterialsDataByDateRange(
                     picker.startDate.format('YYYY-MM-DD'), // Pass formatted start date
                     picker.endDate.format('YYYY-MM-DD') // Pass formatted end date
                 );
@@ -376,18 +339,18 @@
                 $(this).val(''); // Clear the input field
 
                 // Reset the table to show all data
-                filterStockData(); // Call the function to load all data
+                filterMaterialsData(); // Call the function to load all data
             });
         });
 
-        // Function to fetch and filter stock data
-        function filterStockData(month, year) {
+        function filterMaterialsData(month, year, status) {
             $.ajax({
-                url: '/get-stock-data',
+                url: '/get-materials-data',
                 method: 'GET',
                 data: {
                     month: month,
-                    year: year
+                    year: year,
+                    status: status // Pass status to the server
                 },
                 success: function(response) {
                     console.log(response); // Handle response and update tables
@@ -396,9 +359,9 @@
             });
         }
 
-        function filterStockDataByDateRange(startDate, endDate) {
+        function filterMaterialsDataByDateRange(startDate, endDate) {
             $.ajax({
-                url: '/get-stock-data', // Backend endpoint
+                url: '/get-materials-data', // Backend endpoint
                 method: 'GET',
                 data: {
                     start_date: startDate,
@@ -419,37 +382,35 @@
             $('#perDayTable').empty();
             $('#perWeekTable').empty();
 
-            // Helper function to create a row for the table
-            function createRow(date, description, serialNo, statusText) {
+            function createRow(date, description, statusText) {
                 return `<tr>
-            <td>${date}</td>
-            <td>${description}</td>
-            <td>${serialNo}</td>
-            <td>${statusText}</td>
+            <td class="table-date">${date}</td>
+            <td class="table-description">${description}</td>
+            <td class="table-status">${statusText}</td>
         </tr>`;
             }
 
             let perDayCount = 0;
-            let perWeekCount = 0;
+            let usedMaterialsCount = 0; // For counting statuses 0, 1, 2, 3
+            let totalAvailableMaterialsCount = 0; // For counting status 4
 
-            // Function to get status text and class based on status value
             function getStatusText(status) {
-                var statusText;
-                var statusClass;
+                let statusText;
+                let statusClass;
 
-                if (status == 0) {
+                if (status === 0) {
                     statusText = 'Activation';
                     statusClass = 'badge badge-secondary text-light';
-                } else if (status == 1) {
+                } else if (status === 1) {
                     statusText = 'Released';
                     statusClass = 'badge badge-primary text-light';
-                } else if (status == 2) {
+                } else if (status === 2) {
                     statusText = 'Activated';
                     statusClass = 'badge badge-info text-light';
-                } else if (status == 3) {
+                } else if (status === 3) {
                     statusText = 'Repair';
                     statusClass = 'badge badge-danger text-light';
-                } else if (status == 4) {
+                } else if (status === 4) {
                     statusText = 'Available';
                     statusClass = 'badge badge-success text-light';
                 } else {
@@ -457,79 +418,62 @@
                     statusClass = 'badge badge-secondary text-light';
                 }
 
-                return `<div class="status-bg ${statusClass}">${statusText}</div>`;
+                return `<span class="${statusClass}">${statusText}</span>`;
             }
 
-            // Populate Per Day Data
+            // Populate perDayTable
             if (data.perDayData && typeof data.perDayData === 'object' && Object.keys(data.perDayData).length > 0) {
-                let sortedPerDayData = Object.entries(data.perDayData).sort(([dateA], [dateB]) => {
-                    // Sort by the date key
-                    return new Date(dateA) - new Date(dateB);
-                });
-
-                sortedPerDayData.forEach(function([date, items]) {
+                Object.entries(data.perDayData).forEach(([date, items]) => {
                     if (Array.isArray(items) && items.length > 0) {
-                        items.forEach(function(item) {
-                            let descriptions = Array.isArray(item.stock_materials) ?
-                                item.stock_materials.map(mat => mat.stocksdesc_level?.description ||
-                                    'No Description').join(', ') :
-                                'No Description';
+                        items.forEach(item => {
+                            let formattedDate = moment(item.date_delivery).format('MMM DD, YYYY');
+                            let status = getStatusText(item.stocks_level_status);
+                            let row = createRow(formattedDate, item.description || 'No Description',
+                            status);
 
-                            let formattedDate = item.date_released ?
-                                moment(item.date_released).format('MMM DD, YYYY') :
-                                moment(date).format('MMM DD, YYYY');
-
-                            let status = getStatusText(item.status); // Get status text and badge
-
-                            let row = createRow(formattedDate, descriptions, item.serial_no, status);
                             $('#perDayTable').append(row);
-                            perDayCount++; // Increment per day count
+                            perDayCount++;
+
+                            // Increment counts based on status
+                            if ([0, 1, 2, 3].includes(item.stocks_level_status)) {
+                                usedMaterialsCount++;
+                            } else if ([4].includes(item.stocks_level_status)) {
+                                totalAvailableMaterialsCount++;
+                            }
                         });
                     }
                 });
             } else {
-                $('#perDayTable').append('<tr><td colspan="4" class="text-center">No Data Available</td></tr>');
+                $('#perDayTable').append('<tr><td colspan="3" class="text-center">No Data Available</td></tr>');
             }
 
-            // Populate Per Week Data
+            // Populate perWeekTable
             if (data.perWeekData && typeof data.perWeekData === 'object' && Object.keys(data.perWeekData).length > 0) {
-                let sortedPerWeekData = Object.entries(data.perWeekData).sort(([weekA], [weekB]) => {
-                    const weekNumberA = parseInt(weekA.replace('Week ', ''));
-                    const weekNumberB = parseInt(weekB.replace('Week ', ''));
-                    return weekNumberA - weekNumberB;
-                });
-
-                // Count total unique weeks
-                perWeekCount = sortedPerWeekData.length;
-
-                sortedPerWeekData.forEach(function([week, weekData]) {
+                Object.entries(data.perWeekData).forEach(([week, weekData]) => {
                     let weekHeaderRow = `<tr class="week-header">
-                <td colspan="4" class="font-weight-bold text-uppercase">${week}</td>
+                <td colspan="3" class="font-weight-bold text-uppercase">${week}</td>
             </tr>`;
                     $('#perWeekTable').append(weekHeaderRow);
 
-                    weekData.forEach(function(item) {
-                        let descriptions = Array.isArray(item.stock_materials) ?
-                            item.stock_materials.map(mat => mat.stocksdesc_level?.description ||
-                                'No Description').join(', ') :
-                            'No Description';
+                    if (Array.isArray(weekData) && weekData.length > 0) {
+                        weekData.forEach(item => {
+                            let formattedDate = moment(item.date_delivery).format('MMM DD, YYYY');
+                            let status = getStatusText(item.stocks_level_status);
+                            let row = createRow(formattedDate, item.description || 'No Description',
+                            status);
 
-                        let dateReleased = moment(item.date_released).format('MMM DD, YYYY');
-
-                        let status = getStatusText(item.status); // Get status text and badge
-
-                        let row = createRow(dateReleased, descriptions, item.serial_no, status);
-                        $('#perWeekTable').append(row);
-                    });
+                            $('#perWeekTable').append(row);
+                        });
+                    }
                 });
             } else {
-                $('#perWeekTable').append('<tr><td colspan="4" class="text-center">No Data Available</td></tr>');
-                perWeekCount = 0; // No weeks available
+                $('#perWeekTable').append('<tr><td colspan="3" class="text-center">No Data Available</td></tr>');
             }
 
             // Update card counts
-            $('#bucket_count').text(perDayCount); // Total stocks
-            $('#bucket_perweek_count').text(perWeekCount); // Total per week (unique weeks)
+            $('#total_materials_count').text(perDayCount); // Total materials
+            $('#total_used_materials_count').text(usedMaterialsCount); // Count of statuses 0, 1, 2, 3
+            $('#total_available_materials_count').text(totalAvailableMaterialsCount); // Count of status 4
 
             // Add search functionality
             $('#searchBar').off('input').on('input', function() {
@@ -566,90 +510,8 @@
             });
         }
 
-
-        // Function to fetch remaining stock data
-        function fetchremainingstocks() {
-            $.ajax({
-                url: '/total-active-descriptions',
-                type: 'GET',
-                success: function(response) {
-                    renderremainingstocks(response);
-                    console.log(response, 'response1111111');
-                },
-                error: function(xhr, status, error) {
-                    console.error(xhr.responseText);
-                }
-            });
-        }
-
-        function renderremainingstocks(data) {
-            console.log(data);
-            var table = $('#remainingstockstable').DataTable({
-                destroy: true,
-                data: data.activeDescriptions,
-                stripeClasses: [], // Disable striping
-                order: [
-                    [0, 'asc']
-                ], // Default sorting by the first column (product_name) in ascending order
-                columns: [{
-                        data: 'description',
-                        render: data => data ? data : 'N/A',
-                        orderable: true // Allow sorting
-                    },
-                    {
-                        data: 'stocks_level_status',
-                        render: function(data, type, row) {
-                            var statusText;
-                            var statusClass;
-
-                            if (data == 0) {
-                                statusText = 'Activation';
-                                statusClass = 'badge badge-secondary text-light';
-                            } else if (data == 1) {
-                                statusText = 'Released';
-                                statusClass = 'badge badge-primary text-light';
-                            } else if (data == 2) {
-                                statusText = 'Activated';
-                                statusClass = 'badge badge-info text-light';
-                            } else if (data == 3) {
-                                statusText = 'Repair';
-                                statusClass = 'badge badge-danger text-light';
-                            } else if (data == 4) {
-                                statusText = 'Available';
-                                statusClass = 'badge badge-success text-light';
-                            } else {
-                                statusText = 'Unknown';
-                                statusClass = 'badge badge-secondary text-light';
-                            }
-
-                            return '<div class="status-bg ' + statusClass + '">' + statusText + '</div>';
-                        },
-                        className: 'text-nowrap',
-                        orderable: true // Allow sorting by status
-                    }
-
-                ]
-            });
-        }
-
-        function fetchTotalActiveDescriptions() {
-            $.ajax({
-                url: '/total-active-descriptions', // The route for the controller
-                type: 'GET',
-                success: function(response) {
-                    // Update the card's total count
-                    $('#remaining_buckets_count').text(response
-                        .totalActiveDescriptions); // Update with the correct JSON key
-                },
-                error: function(xhr, status, error) {
-                    console.error('Failed to fetch total active descriptions:', error);
-                }
-            });
-        }
-
-
         // Initialize Select2 for filter dropdowns
-        $('#filtermonth, #filteryear').select2({
+        $('#filtermonth, #filteryear, #filterstatus').select2({
             width: '100%',
         });
     </script>

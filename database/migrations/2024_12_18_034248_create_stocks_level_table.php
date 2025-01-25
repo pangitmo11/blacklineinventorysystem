@@ -15,6 +15,7 @@ class CreateStocksLevelTable extends Migration
     {
         Schema::create('stocks_level', function (Blueprint $table) {
             $table->id(); // Auto-incrementing primary key
+            $table->date('date_delivery')->nullable(); // Date of delivery
             $table->text('description')->nullable(); // Description of the product
             $table->tinyInteger('stocks_level_status')->nullable()->default(null);
             $table->timestamps(); // Created and updated timestamps
