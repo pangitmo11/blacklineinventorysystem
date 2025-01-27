@@ -82,21 +82,22 @@ return [
             'replace_placeholders' => true,
         ],
 
-        'papertrail' => [
-            'driver' => 'monolog',
-            'level' => env('LOG_LEVEL', 'debug'),
-            'handler' => env('PAPERTRAIL_URL') && env('PAPERTRAIL_PORT')
-                ? env('LOG_PAPERTRAIL_HANDLER', SyslogUdpHandler::class)
-                : null, // If Papertrail is not configured, use no handler
-            'handler_with' => env('PAPERTRAIL_URL') && env('PAPERTRAIL_PORT')
-                ? [
-                    'host' => env('PAPERTRAIL_URL'),
-                    'port' => env('PAPERTRAIL_PORT'),
-                    'connectionString' => 'tls://'.env('PAPERTRAIL_URL').':'.env('PAPERTRAIL_PORT'),
-                ]
-                : [], // Don't set any handler options if not configured
-            'processors' => [PsrLogMessageProcessor::class],
-        ],
+'papertrail' => [
+    'driver' => 'monolog',
+    'level' => env('LOG_LEVEL', 'debug'),
+    'handler' => env('PAPERTRAIL_URL') && env('PAPERTRAIL_PORT')
+        ? env('LOG_PAPERTRAIL_HANDLER', \Monolog\Handler\SyslogUdpHandler::class)
+        : null,  // Use null if Papertrail URL and port are not set
+    'handler_with' => env('PAPERTRAIL_URL') && env('PAPERTRAIL_PORT')
+        ? [
+            'host' => env('PAPERTRAIL_URL'),
+            'port' => env('PAPERTRAIL_PORT'),
+            'connectionString' => 'tls://' . env('PAPERTRAIL_URL') . ':' . env('PAPERTRAIL_PORT'),
+        ]
+        : [],  // Empty array if no Papertrail configuration
+    'processors' => [\Monolog\Processor\PsrLogMessageProcessor::class],
+],
+
 
 
         'stderr' => [
