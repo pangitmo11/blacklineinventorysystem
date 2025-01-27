@@ -9,7 +9,7 @@ use App\Http\Controllers\PageController;  // Import PageController
 
 // Root route
 Route::get('/', function () {
-    return redirect()->route('stock');
+    return redirect()->route('dashboard');
 });
 
 // View routes handled by PageController
