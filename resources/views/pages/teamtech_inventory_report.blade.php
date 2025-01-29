@@ -2,14 +2,14 @@
 
 <!-- Bootstrap 4 CSS -->
 <!-- Bootstrap 4 CSS (required for DataTables and Select2 integration) -->
-<link href="{{ asset('css/bootstrap_4.min.css') }}" rel="stylesheet" />
+<link href="{{ secure_asset('css/bootstrap_4.min.css') }}" rel="stylesheet" />
 <!-- Select2 CSS -->
-<link href="{{ asset('css/select2.min.css') }}" rel="stylesheet" />
+<link href="{{ secure_asset('css/select2.min.css') }}" rel="stylesheet" />
 <!-- datatables CSS -->
-<link rel="stylesheet" type="text/css" href="{{ asset('css/datatables.min.css') }}">
-<link rel="stylesheet" type="text/css" href="{{ asset('css/dataTables.bootstrap4.min.css') }}">
+<link rel="stylesheet" type="text/css" href="{{ secure_asset('css/datatables.min.css') }}">
+<link rel="stylesheet" type="text/css" href="{{ secure_asset('css/dataTables.bootstrap4.min.css') }}">
 
-<link href="{{ asset('css/daterangepicker.css') }}" rel="stylesheet" />
+<link href="{{ secure_asset('css/daterangepicker.css') }}" rel="stylesheet" />
 
 <style>
     /* Add hover effect to the card */
@@ -152,35 +152,27 @@
 @endsection
 
 @push('scripts')
-    <!-- jQuery (must be included first) -->
-    <script src="{{ asset('js/jquery-3.6.0.min.js') }}"></script>
+ <!-- jQuery (must be included first) -->
+<script src="{{ secure_asset('js/jquery-3.6.0.min.js') }}"></script>
 
-    <!-- DataTables JS -->
-    <script src="{{ asset('js/jquery.dataTables.min.js') }}"></script>
+<!-- Bootstrap JS (required for DataTables Bootstrap integration) -->
+<script src="{{ secure_asset('js/bootstrap.bundle.min.js') }}"></script>
 
-    <!-- Bootstrap JS (required for DataTables Bootstrap integration) -->
-    <script src="{{ asset('js/bootstrap.bundle.min.js') }}"></script>
+<!-- DataTables JS -->
+<script src="{{ secure_asset('js/jquery.dataTables.min.js') }}"></script>
 
-    <!-- Select2 JS -->
-    <script src="{{ asset('js/select2.min.js') }}"></script>
+<!-- Select2 JS -->
+<script src="{{ secure_asset('js/select2.min.js') }}"></script>
 
-    <!-- jsPDF Library for PDF Export -->
-    <script src="{{ asset('js/jspdf.umd.min.js') }}"></script>
-    <script src="{{ asset('js/jspdf.plugin.autotable.min.js') }}"></script>
+<!-- Additional libraries (e.g., jsPDF, SweetAlert, etc.) -->
+<script src="{{ secure_asset('js/jspdf.umd.min.js') }}"></script>
+<script src="{{ secure_asset('js/jspdf.plugin.autotable.min.js') }}"></script>
+<script src="{{ secure_asset('js/xlsx.full.min.js') }}"></script>
+<script src="{{ secure_asset('js/FileSaver.min.js') }}"></script>
+<script src="{{ secure_asset('js/sweetalert2@11.min.js') }}"></script>
+<script src="{{ secure_asset('js/moment.min.js') }}"></script>
+<script src="{{ secure_asset('js/daterangepicker.min.js') }}"></script>
 
-    <!-- SheetJS Library for Excel Export -->
-    <script src="{{ asset('js/xlsx.full.min.js') }}"></script>
-
-    <!-- FileSaver.js for saving the Excel file -->
-    <script src="{{ asset('js/FileSaver.min.js') }}"></script>
-
-    <!-- SweetAlert2 -->
-    <script src="{{ asset('js/sweetalert2@11.min.js') }}"></script>
-
-    <!-- moment.js -->
-    <script src="{{ asset('js/moment.min.js') }}"></script>
-
-    <script src="{{ asset('js/daterangepicker.min.js') }}"></script>
 
     <script>
         $(document).ready(function() {

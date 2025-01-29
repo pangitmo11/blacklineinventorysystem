@@ -91,7 +91,7 @@
         <!-- Sidebar -->
         <div class="sidebar common-bg">
             <div class="d-flex justify-content-center">
-                <img src="{{ asset('images/Meta3.jpg') }}" alt="Logo">
+                <img src="{{ secure_asset('images/Meta3.jpg') }}" alt="Logo">
             </div>
             <hr>
 

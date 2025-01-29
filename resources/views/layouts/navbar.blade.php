@@ -72,7 +72,7 @@
                     <li class="nav-item">
                         <!-- Logo inside a circle with white outline -->
                         <a class="nav-link" href="#">
-                            <img src="{{ asset('images/user.jpg') }}" alt="Logo">
+                            <img src="{{ secure_asset('images/user.jpg') }}" alt="Logo">
                         </a>
                     </li>
                 </ul>
